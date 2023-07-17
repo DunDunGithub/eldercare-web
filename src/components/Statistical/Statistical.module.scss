@@ -30,3 +30,13 @@
     font-size: 2.2rem;
     font-weight: bold;
 }
+
+.header-wrap{
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-wrap input{
+    margin-right: 85px;
+    width: 200px;
+}

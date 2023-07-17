@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 
 import classNames from 'classnames/bind';
-import styles from './DataViewAIP.module.scss'
+import styles from './DataViewGuardian.module.scss'
 
 const cx = classNames.bind(styles);
 
-function DataViewAIP() {
+function DataViewGuardian() {
     const column = [
         {
             name: 'Fullname',
@@ -34,7 +34,7 @@ function DataViewAIP() {
             selector: (row) => row.phonenumber,
         },
         {
-            name: 'Health condition',
+            name: 'Email',
             selector: (row) => row.phonenumber,
         },
         {
@@ -67,7 +67,7 @@ function DataViewAIP() {
 
     return (
         <div className={cx('data-view')}>
-            <h2>Dữ liệu tổng quát AIP</h2>
+            <h2>Dữ liệu tổng quát Guardian</h2>
             <div className={cx('header-data-view')}>
                 <div style={{ margin: '10px' }}>
                     <input
@@ -77,11 +77,11 @@ function DataViewAIP() {
                         onChange={handleFilter}
                     />
                 </div>
-                <button className={cx('btn-add')}>Add AIP</button>
+                <button className={cx('btn-add')}>Add Guardian</button>
             </div>
             <DataTable columns={column} data={records} pagination></DataTable>
         </div>
     );
 }
 
-export default DataViewAIP;
+export default DataViewGuardian;

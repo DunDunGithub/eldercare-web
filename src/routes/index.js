@@ -3,6 +3,8 @@ import Calender from '~/pages/Calender';
 import AIP from '~/pages/AIP';
 import Login from '~/pages/Login';
 import Dashboard from '~/pages/Dashboard';
+import DataViewCalender from '~/components/DataViewCalender';
+import DataViewAIP from '~/components/DataViewAIP';
 
 //Đăng nhập xong mới xem được
 const publicRoutes = [
@@ -23,11 +25,24 @@ const publicRoutes = [
         component: Login,
     },
     {
-        path:'/dashboard',
-        component: Dashboard
-    }
+        path: '/dashboard',
+        component: Dashboard,
+    },
+    {
+        path: '/dashboard/:category',
+        component: Dashboard,
+    },
 ];
 
-const privateRoutes = [];
+// const bodyRoutes = [
+//     {
+//         path: 'dashboard/dataviewcalender',
+//         component: DataViewCalender,
+//     },
+//     {
+//         path: 'dashboard/dataviewcaip',
+//         component: DataViewAIP,
+//     },
+// ];
 
-export { publicRoutes, privateRoutes };
+export { publicRoutes };

@@ -9,10 +9,13 @@ function NavigationDashboard() {
             <ul className={cx('nav-list')}>
                 Dashboard
                 <li className={cx('nav-item')}>
-                    <a href="#!">Lịch làm việc</a>
+                    <a href="dataviewcalender">Calender</a>
                 </li>
                 <li className={cx('nav-item')}>
-                    <a href="#!">API</a>
+                    <a href="dataviewaip">API</a>
+                </li>
+                <li className={cx('nav-item')}>
+                    <a href="dataviewguardian">Guardian</a>
                 </li>
             </ul>
             <ul className={cx('nav-list')}>
@@ -27,7 +30,7 @@ function NavigationDashboard() {
             <ul className={cx('nav-list')}>
                 Statistical
                 <li className={cx('nav-item')}>
-                    <a href="#!">Công việc</a>
+                    <a href="/dashboard/statistical">Thống kê</a>
                 </li>
             </ul>
         </div>

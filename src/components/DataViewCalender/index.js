@@ -33,6 +33,13 @@ function DataViewCalender() {
             name: 'Pictures prove',
             selector: (row) => row.phonenumber,
         },
+        {
+            name: 'Rate',
+            selector: (row) => row.phonenumber,
+        },
+        {
+            name: 'Change',
+        }
     ];
 
     useEffect(() => {

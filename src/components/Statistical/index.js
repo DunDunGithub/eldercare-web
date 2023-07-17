@@ -36,7 +36,7 @@ function Statistical() {
     return (
         <div className={cx('data-view')}>
             <h2>Thống kê</h2>
-            <div style={{margin:'10px'}}>
+            <div style={{ margin: '10px' }} className={cx('header-wrap')}>
                 <RangePicker
                     onChange={(values) => {
                         setDates(
@@ -44,6 +44,15 @@ function Statistical() {
                                 return item.format('YYYY-DD-MM');
                             }),
                         );
+                    }}
+                />
+
+                <input
+                    type="text"
+                    placeholder="Guardian ID..."
+                    style={{ padding: '4px' }}
+                    onChange={()=>{
+
                     }}
                 />
             </div>
