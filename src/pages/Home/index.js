@@ -4,6 +4,7 @@ import Header from '~/components/Header';
 
 import leftImage from 'src/assets/images/home_left_people.png';
 import rightImage from 'src/assets/images/home_right_people.png';
+import Footer from '~/components/Footer';
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +27,8 @@ function HomePage() {
                     <img src={rightImage} className={cx('right-image')}></img>
                 </div>
             </div>
+
+            <Footer/>
         </div>
     );
 }

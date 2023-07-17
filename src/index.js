@@ -4,6 +4,7 @@ import App from '~/App';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyles from './components/GlobalStyles';
 import Form from './components/Form';
+import Table from './components/DataViewCalender';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

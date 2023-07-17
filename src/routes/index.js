@@ -2,6 +2,7 @@ import HomePage from '~/pages/Home';
 import Calender from '~/pages/Calender';
 import AIP from '~/pages/AIP';
 import Login from '~/pages/Login';
+import Dashboard from '~/pages/Dashboard';
 
 //Đăng nhập xong mới xem được
 const publicRoutes = [
@@ -10,17 +11,21 @@ const publicRoutes = [
         component: HomePage,
     },
     {
-        path: '/calender',
+        path: '/dashboard/calender',
         component: Calender,
     },
     {
-        path: '/aip',
+        path: '/dashboard/aip',
         component: AIP,
     },
     {
         path: '/login',
         component: Login,
     },
+    {
+        path:'/dashboard',
+        component: Dashboard
+    }
 ];
 
 const privateRoutes = [];
