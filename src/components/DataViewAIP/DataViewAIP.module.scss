@@ -19,3 +19,47 @@
     height: 40px;
     width: 100px;
 }
+
+
+// 
+
+form {
+    margin: 5rem auto 0;
+    width: 24rem;
+  
+    .count {
+      padding: 0.25rem 0;
+      text-align: center;
+      color: #fff;
+      background: #333;
+      border-radius: 4px;
+    }
+  
+    div,
+    select {
+      margin-bottom: 1rem;
+      width: inherit;
+    }
+  
+    input,
+    select {
+      padding: 0 0.5rem;
+      width: inherit;
+      height: 3rem;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+  
+    input[type="submit"] {
+      height: 2.5rem;
+      font-size: 1rem;
+      color: #fff;
+      background: #0971f1;
+      cursor: pointer;
+    }
+  
+    p {
+      margin-top: 0.5rem;
+      color: #ff9900;
+    }
+  }

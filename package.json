@@ -27,6 +27,7 @@
     "react-app-rewired": "^2.2.1",
     "react-bootstrap": "^2.8.0",
     "react-chartjs-2": "^5.2.0",
+    "react-cool-form": "^0.4.1",
     "react-data-table-component": "^7.5.3",
     "react-date-range": "^1.4.0",
     "react-dom": "^18.2.0",
