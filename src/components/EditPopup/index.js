@@ -1,16 +1,40 @@
 import classNames from 'classnames/bind';
 import styles from './EditPopup.module.scss';
 
-import { useForm } from 'react-cool-form';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { Button } from 'antd';
 
 const cx = classNames.bind(styles);
 
 function EditPopup(props) {
-    const { form, use } = useForm({
-        defaultValues: { firstName: '', lastName: '', framework: '' },
-        onSubmit: (values) => alert(JSON.stringify(values, undefined, 2)),
-    });
-    const errors = use('errors');
+    const selectedData = props.selectedData;
+    const handleSelectedDataChange = props.handleSelectedDataChange;
+
+    const updateData = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.put(
+                `https://eldercare.up.railway.app/aip/${selectedData._id}`,
+                selectedData,
+            );
+            console.log(response.data); // Handle the response from the API
+            props.onAIPUpdated();
+            props.setTrigger(false);
+        } catch (error) {
+            console.error(error); // Handle the error
+        }
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        handleSelectedDataChange((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
+
     return props.trigger ? (
         <div className={cx('popup')}>
             <div className={cx('popup-inner')}>
@@ -21,76 +45,83 @@ function EditPopup(props) {
                     Close
                 </button>
 
-                <form ref={form} noValidate>
+                <form noValidate onSubmit={updateData}>
                     <h3>EDIT AIP</h3>
-                    {/* <div className={cx('count')}>Render {count} times</div> */}
+
                     {/* First name */}
                     <div>
-                        <label for="firstName">First name</label>
+                        <label htmlFor="firstName">First name</label>
                         <input
                             name="firstName"
                             placeholder="First name"
+                            value={selectedData.firstName}
+                            onChange={handleChange}
                             required
                         />
-                        {errors.firstName && <p>{errors.firstName}</p>}
                     </div>
                     {/* Last name */}
                     <div>
-                        <label for="lastName">Last name</label>
+                        <label htmlFor="lastName">Last name</label>
                         <input
                             name="lastName"
                             placeholder="Last name"
+                            value={selectedData.lastName}
+                            onChange={handleChange}
                             required
                         />
-                        {errors.lastName && <p>{errors.lastName}</p>}
                     </div>
                     {/* Date of birth */}
                     <div>
-                        <label for="date">Date of birth</label>
+                        <label htmlFor="dateOfBirth">Date of birth</label>
                         <input
-                            name="date"
+                            name="dateOfBirth"
                             placeholder="Date of birth"
+                            value={selectedData.dateOfBirth}
+                            onChange={handleChange}
                             required
                         />
-                        {errors.lastName && <p>{errors.lastName}</p>}
                     </div>
                     {/* CCCD */}
                     <div>
-                        <label for="cccd">CCCD</label>
-                        <input name="cccd" placeholder="CCCD" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
+                        <label htmlFor="CCCD">CCCD</label>
+                        <input
+                            name="CCCD"
+                            placeholder="CCCD"
+                            value={selectedData.CCCD}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
                     {/* Phone number */}
                     <div>
-                        <label for="phone">Phone number</label>
+                        <label htmlFor="phoneNumber">Phone number</label>
                         <input
-                            name="phone"
+                            name="phoneNumber"
                             placeholder="Phone number"
+                            value={selectedData.phoneNumber}
+                            onChange={handleChange}
                             required
                         />
-                        {errors.lastName && <p>{errors.lastName}</p>}
                     </div>
                     {/* Address */}
                     <div>
-                        <label for="address">Address</label>
-                        <input name="address" placeholder="Address" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
+                        <label htmlFor="address">Address</label>
+                        <input
+                            name="address"
+                            placeholder="Address"
+                            value={selectedData.address}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     {/* Health condition */}
                     <div>
-                        <label for="health">Health condition</label>
+                        <label htmlFor="health">Health condition</label>
                         <input name="health" placeholder="CCCD" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
                     </div>
-                    {/* <select name="framework">
-                        <option value="">I'm interesting in...</option>
-                        <option value="react">React</option>
-                        <option value="vue">Vue</option>
-                        <option value="angular">Angular</option>
-                        <option value="svelte">Svelte</option>
-                    </select> */}
-                    <input type="submit" />
+
+                    <button type="submit">Update</button>
                 </form>
             </div>
         </div>

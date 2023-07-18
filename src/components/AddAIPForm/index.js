@@ -1,100 +1,137 @@
-import classNames from "classnames/bind";
-import styles from "./AddAIPForm.module.scss"
+import classNames from 'classnames/bind';
+import styles from './AddAIPForm.module.scss';
+import axios from 'axios';
+import { useState } from 'react';
 
-import { render } from 'react-dom';
-import { useForm } from 'react-cool-form';
-import { useEffect, useState } from 'react';
-
-const cx = classNames.bind(styles)
+const cx = classNames.bind(styles);
 
 function AddAIPForm(props) {
-
-    const { form, use } = useForm({
-        defaultValues: { firstName: '', lastName: '', framework: '' },
-        onSubmit: (values) => alert(JSON.stringify(values, undefined, 2)),
+    const [aipData, setAipData] = useState({
+        firstName: '',
+        lastName: '',
+        CCCD: '',
+        phoneNumber: '',
+        dateOfBirth: '',
+        address: '',
     });
-    const errors = use('errors');
 
-    return (props.trigger) ? (
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        axios
+            .post('https://eldercare.up.railway.app/aip', aipData)
+            .then((res) => {
+                // Call the callback function to trigger table update in DataViewAIP
+                props.onAIPAdded();
+                props.onAdd();
+                // Reset the form fields
+                setAipData({
+                    firstName: '',
+                    lastName: '',
+                    CCCD: '',
+                    phoneNumber: '',
+                    dateOfBirth: '',
+                    address: '',
+                });
+            })
+            .catch((err) => console.log(err));
+    };
+
+    const handleChange = (e) => {
+        setAipData({ ...aipData, [e.target.name]: String(e.target.value) });
+    };
+
+    return props.trigger ? (
         <div className={cx('popup')}>
             <div className={cx('popup-inner')}>
-                <button className={cx('btn-close')}
-                    onClick={()=>props.setTrigger(false)}>Close</button>
-                {/* {props.children} */}
-                <form ref={form} noValidate>
-                    <h3>ADD AIP</h3>
-                    {/* <div className={cx('count')}>Render {count} times</div> */}
-                    {/* First name */}
+                <button
+                    className={cx('btn-close')}
+                    onClick={() => props.setTrigger(false)}
+                >
+                    Close›
+                </button>
+
+                <h3>ADD AIP</h3>
+                <form noValidate onSubmit={handleSubmit}>
                     <div>
-                        <label for="firstName">First name</label>
+                        <label htmlFor="firstName">First name</label>
                         <input
                             name="firstName"
                             placeholder="First name"
+                            value={aipData.firstName}
+                            onChange={handleChange}
                             required
                         />
-                        {errors.firstName && <p>{errors.firstName}</p>}
                     </div>
                     {/* Last name */}
                     <div>
-                        <label for="lastName">Last name</label>
+                        <label htmlFor="lastName">Last name</label>
                         <input
                             name="lastName"
                             placeholder="Last name"
+                            value={aipData.lastName}
+                            onChange={handleChange}
                             required
                         />
-                        {errors.lastName && <p>{errors.lastName}</p>}
                     </div>
                     {/* Date of birth */}
                     <div>
-                        <label for="date">Date of birth</label>
+                        <label htmlFor="dateOfBirth">Date of birth</label>
                         <input
-                            name="date"
+                            name="dateOfBirth"
                             placeholder="Date of birth"
+                            value={aipData.dateOfBirth}
+                            onChange={handleChange}
                             required
                         />
-                        {errors.lastName && <p>{errors.lastName}</p>}
                     </div>
                     {/* CCCD */}
                     <div>
-                        <label for="cccd">CCCD</label>
-                        <input name="cccd" placeholder="CCCD" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
+                        <label htmlFor="CCCD">CCCD</label>
+                        <input
+                            name="CCCD"
+                            placeholder="CCCD"
+                            value={aipData.CCCD}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
                     {/* Phone number */}
                     <div>
-                        <label for="phone">Phone number</label>
+                        <label htmlFor="phone">Phone number</label>
                         <input
-                            name="phone"
+                            name="phoneNumber"
                             placeholder="Phone number"
+                            value={aipData.phoneNumber}
+                            onChange={handleChange}
                             required
                         />
-                        {errors.lastName && <p>{errors.lastName}</p>}
                     </div>
                     {/* Address */}
                     <div>
-                        <label for="address">Address</label>
-                        <input name="address" placeholder="Address" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
+                        <label htmlFor="address">Address</label>
+                        <input
+                            name="address"
+                            placeholder="Address"
+                            value={aipData.address}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     {/* Health condition */}
                     <div>
-                        <label for="health">Health condition</label>
-                        <input name="health" placeholder="CCCD" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
+                        <label htmlFor="health">Health condition</label>
+                        <input name="health" placeholder="CCCD" />
                     </div>
-                    {/* <select name="framework">
-                        <option value="">I'm interesting in...</option>
-                        <option value="react">React</option>
-                        <option value="vue">Vue</option>
-                        <option value="angular">Angular</option>
-                        <option value="svelte">Svelte</option>
-                    </select> */}
-                    <input type="submit" />
+
+                    <button type="submit">Submit</button>
                 </form>
             </div>
         </div>
-    ) : "";
+    ) : (
+        ''
+    );
 }
 
 export default AddAIPForm;
