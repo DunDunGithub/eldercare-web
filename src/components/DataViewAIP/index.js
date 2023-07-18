@@ -8,27 +8,21 @@ import DataTable from 'react-data-table-component';
 import classNames from 'classnames/bind';
 import styles from './DataViewAIP.module.scss';
 import AddAIPForm from '../AddAIPForm';
+import RemovePopup from '../RemovePopup';
+import EditPopup from '../EditPopup';
 
 const cx = classNames.bind(styles);
 
 let count = 0;
 
 function DataViewAIP() {
-    count++;
+    const handleEditButton = (row) => {
+        seteditPopup(true);
+    };
 
-    const { form, use } = useForm({
-        defaultValues: { firstName: '', lastName: '', framework: '' },
-        onSubmit: (values) => alert(JSON.stringify(values, undefined, 2)),
-    });
-    const errors = use('errors');
-
-    const handleEditButton= (row) => {
-
-    }
-
-    const handleRemoveButton= (row) => {
-
-    }
+    const handleRemoveButton = (row) => {
+        setremovePopup(true);
+    };
 
     const column = [
         {
@@ -60,11 +54,27 @@ function DataViewAIP() {
         },
         {
             name: 'Edit',
-            cell: (row) => <button onClick={() => handleEditButton(row)}>Edit</button>,
+            cell: (row) => (
+                <button onClick={() => handleEditButton(row)} style={{width:'60px', height:'30px'}}>Edit</button>
+            ),
         },
         {
             name: 'Remove',
-            cell: (row) => <button onClick={() => handleRemoveButton(row)}>Remove</button>,
+            cell: (row) => (
+                <button
+                    onClick={() => {
+                        if (
+                            window.confirm(
+                                'Are you sure you wish to delete this item?',
+                            )
+                        )
+                            this.onCancel(() => {});
+                    }}
+                    style={{width:'80px', height:'30px'}}
+                >
+                    Remove
+                </button>
+            ),
         },
     ];
 
@@ -92,6 +102,8 @@ function DataViewAIP() {
     };
 
     const [popupAdd, setpopupAdd] = useState(false);
+    const [removePopup, setremovePopup] = useState(false);
+    const [editPopup, seteditPopup] = useState(false);
 
     return (
         <div className={cx('data-view')}>
@@ -113,79 +125,22 @@ function DataViewAIP() {
                 </button>
             </div>
             <DataTable columns={column} data={records} pagination></DataTable>
-            <AddAIPForm trigger={popupAdd} setTrigger={setpopupAdd}>
-                <form ref={form} noValidate>
-                    <h3>ADD AIP</h3>
-                    {/* <div className={cx('count')}>Render {count} times</div> */}
-                    {/* First name */}
-                    <div>
-                        <label for="firstName">First name</label>
-                        <input
-                            name="firstName"
-                            placeholder="First name"
-                            required
-                        />
-                        {errors.firstName && <p>{errors.firstName}</p>}
-                    </div>
-                    {/* Last name */}
-                    <div>
-                        <label for="lastName">Last name</label>
-                        <input
-                            name="lastName"
-                            placeholder="Last name"
-                            required
-                        />
-                        {errors.lastName && <p>{errors.lastName}</p>}
-                    </div>
-                    {/* Date of birth */}
-                    <div>
-                        <label for="date">Date of birth</label>
-                        <input
-                            name="date"
-                            placeholder="Date of birth"
-                            required
-                        />
-                        {errors.lastName && <p>{errors.lastName}</p>}
-                    </div>
-                    {/* CCCD */}
-                    <div>
-                        <label for="cccd">CCCD</label>
-                        <input name="cccd" placeholder="CCCD" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
-                    </div>
-                    {/* Phone number */}
-                    <div>
-                        <label for="phone">Phone number</label>
-                        <input
-                            name="phone"
-                            placeholder="Phone number"
-                            required
-                        />
-                        {errors.lastName && <p>{errors.lastName}</p>}
-                    </div>
-                    {/* Address */}
-                    <div>
-                        <label for="address">Address</label>
-                        <input name="address" placeholder="Address" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
-                    </div>
 
-                    {/* Health condition */}
-                    <div>
-                        <label for="health">Health condition</label>
-                        <input name="health" placeholder="CCCD" required />
-                        {errors.lastName && <p>{errors.lastName}</p>}
-                    </div>
-                    {/* <select name="framework">
-                        <option value="">I'm interesting in...</option>
-                        <option value="react">React</option>
-                        <option value="vue">Vue</option>
-                        <option value="angular">Angular</option>
-                        <option value="svelte">Svelte</option>
-                    </select> */}
-                    <input type="submit" />
-                </form>
-            </AddAIPForm>
+            <RemovePopup
+                trigger={removePopup}
+                setTrigger={setremovePopup}
+            ></RemovePopup>
+
+            <EditPopup
+                trigger={editPopup}
+                setTrigger={seteditPopup}
+            ></EditPopup>
+
+            {/* Add AIP */}
+            <AddAIPForm
+                trigger={popupAdd}
+                setTrigger={setpopupAdd}
+            ></AddAIPForm>
         </div>
     );
 }

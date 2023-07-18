@@ -1,28 +1,28 @@
-import classNames from "classnames/bind";
-import styles from "./AddAIPForm.module.scss"
+import classNames from 'classnames/bind';
+import styles from './EditPopup.module.scss';
 
-import { render } from 'react-dom';
 import { useForm } from 'react-cool-form';
-import { useEffect, useState } from 'react';
 
-const cx = classNames.bind(styles)
+const cx = classNames.bind(styles);
 
-function AddAIPForm(props) {
-
+function EditPopup(props) {
     const { form, use } = useForm({
         defaultValues: { firstName: '', lastName: '', framework: '' },
         onSubmit: (values) => alert(JSON.stringify(values, undefined, 2)),
     });
     const errors = use('errors');
-
-    return (props.trigger) ? (
+    return props.trigger ? (
         <div className={cx('popup')}>
             <div className={cx('popup-inner')}>
-                <button className={cx('btn-close')}
-                    onClick={()=>props.setTrigger(false)}>Close</button>
-                {/* {props.children} */}
+                <button
+                    className={cx('btn-close')}
+                    onClick={() => props.setTrigger(false)}
+                >
+                    Close
+                </button>
+
                 <form ref={form} noValidate>
-                    <h3>ADD AIP</h3>
+                    <h3>EDIT AIP</h3>
                     {/* <div className={cx('count')}>Render {count} times</div> */}
                     {/* First name */}
                     <div>
@@ -94,7 +94,9 @@ function AddAIPForm(props) {
                 </form>
             </div>
         </div>
-    ) : "";
+    ) : (
+        ''
+    );
 }
 
-export default AddAIPForm;
+export default EditPopup;

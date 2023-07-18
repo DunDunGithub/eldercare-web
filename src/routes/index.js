@@ -34,15 +34,15 @@ const publicRoutes = [
     },
 ];
 
-// const bodyRoutes = [
-//     {
-//         path: 'dashboard/dataviewcalender',
-//         component: DataViewCalender,
-//     },
-//     {
-//         path: 'dashboard/dataviewcaip',
-//         component: DataViewAIP,
-//     },
-// ];
+const bodyRoutes = [
+    {
+        path: 'dashboard/dataviewcalender',
+        component: DataViewCalender,
+    },
+    {
+        path: 'dashboard/dataviewcaip',
+        component: DataViewAIP,
+    },
+];
 
-export { publicRoutes };
+export { publicRoutes, bodyRoutes };
