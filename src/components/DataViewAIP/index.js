@@ -97,6 +97,7 @@ function DataViewAIP() {
             })
             .catch((err) => console.log(err));
     };
+    
     useEffect(() => {
         fetchData();
     }, []);

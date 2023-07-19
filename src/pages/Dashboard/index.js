@@ -14,6 +14,7 @@ import {
 } from 'react-router-dom';
 import { bodyRoutes } from '~/routes';
 import DataViewGuardian from '~/components/DataViewGuardian';
+import Assign from '~/components/AssignTask';
 const cx = classNames.bind(styles);
 
 function Dashboard() {
@@ -35,6 +36,7 @@ function Dashboard() {
                 {category === 'dataviewcalender' && <DataViewCalender />}
                 {category === 'dataviewaip' && <DataViewAIP />}
                 {category === 'dataviewguardian' && <DataViewGuardian />}
+                {category === 'assign' && <Assign/>} 
             </div>
         </div>
     );

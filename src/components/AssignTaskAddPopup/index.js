@@ -1,44 +1,47 @@
 import classNames from 'classnames/bind';
-import styles from './AddAIPForm.module.scss';
-import axios from 'axios';
+import styles from './AssignTaskAddPopup.module.scss';
+
 import { useState } from 'react';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-function AddAIPForm(props) {
-    const [aipData, setAipData] = useState({
-        firstName: '',
-        lastName: '',
-        CCCD: '',
-        phoneNumber: '',
-        dateOfBirth: '',
-        address: '',
+function AssignTaskAddPopup(props) {
+    const [taskData, setTaskData] = useState({
+        title: '',
+        detail: '',
+        isDone: '',
+        startTime: '',
+        endTime: '',
+        guardian: '',
+        aip: '',
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         axios
-            .post('https://eldercare.up.railway.app/aip', aipData)
+            .post('https://eldercare.up.railway.app/task', taskData)
             .then((res) => {
                 // Call the callback function to trigger table update in DataViewAIP
-                props.onAIPAdded();
+                props.onAssignTaskAdded();
                 props.onAdd();
                 // Reset the form fields
-                setAipData({
-                    firstName: '',
-                    lastName: '',
-                    CCCD: '',
-                    phoneNumber: '',
-                    dateOfBirth: '',
-                    address: '',
+                setTaskData({
+                    title: '',
+                    detail: '',
+                    isDone: '',
+                    startTime: '',
+                    endTime: '',
+                    guardian: '',
+                    aip: '',
                 });
             })
             .catch((err) => console.log(err));
     };
 
     const handleChange = (e) => {
-        setAipData({ ...aipData, [e.target.name]: String(e.target.value) });
+        setTaskData({ ...taskData, [e.target.name]: String(e.target.value) });
     };
 
     return props.trigger ? (
@@ -54,75 +57,81 @@ function AddAIPForm(props) {
                 <h3>ADD AIP</h3>
                 <form noValidate onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="firstName">First name</label>
+                        <label htmlFor="title">Title</label>
                         <input
-                            name="firstName"
-                            placeholder="First name"
-                            value={aipData.firstName}
+                            name="title"
+                            placeholder="Title"
+                            value={taskData.title}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     {/* Last name */}
                     <div>
-                        <label htmlFor="lastName">Last name</label>
+                        <label htmlFor="detail">Detail</label>
                         <input
-                            name="lastName"
-                            placeholder="Last name"
-                            value={aipData.lastName}
+                            name="detail"
+                            placeholder="Detail"
+                            value={taskData.detail}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     {/* Date of birth */}
                     <div>
-                        <label htmlFor="dateOfBirth">Date of birth</label>
+                        <label htmlFor="isDone">Status</label>
                         <input
-                            name="dateOfBirth"
-                            placeholder="Date of birth"
-                            value={aipData.dateOfBirth}
+                            name="isDone"
+                            placeholder="Status"
+                            value={taskData.isDone}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     {/* CCCD */}
                     <div>
-                        <label htmlFor="CCCD">CCCD</label>
+                        <label htmlFor="startTime">Start time</label>
                         <input
-                            name="CCCD"
-                            placeholder="CCCD"
-                            value={aipData.CCCD}
+                            name="startTime"
+                            placeholder="Start Time"
+                            value={taskData.startTime}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     {/* Phone number */}
                     <div>
-                        <label htmlFor="phone">Phone number</label>
+                        <label htmlFor="endTime">End time</label>
                         <input
-                            name="phoneNumber"
-                            placeholder="Phone number"
-                            value={aipData.phoneNumber}
+                            name="endTime"
+                            placeholder="End time"
+                            value={taskData.endTime}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     {/* Address */}
                     <div>
-                        <label htmlFor="address">Address</label>
+                        <label htmlFor="guardian">Guardian</label>
                         <input
-                            name="address"
-                            placeholder="Address"
-                            value={aipData.address}
+                            name="guardian"
+                            placeholder="Guardian"
+                            value={taskData.guardian}
                             onChange={handleChange}
                             required
                         />
                     </div>
 
-                    {/* Health condition */}
+                    {/* Address */}
                     <div>
-                        <label htmlFor="health">Health condition</label>
-                        <input name="health" placeholder="CCCD" />
+                        <label htmlFor="aip">AIP</label>
+                        <input
+                            name="aip"
+                            placeholder="AIP"
+                            value={taskData.aip}
+                            onChange={handleChange}
+                            required
+                        />
                     </div>
 
                     <button type="submit">Submit</button>
@@ -134,4 +143,4 @@ function AddAIPForm(props) {
     );
 }
 
-export default AddAIPForm;
+export default AssignTaskAddPopup;

@@ -5,6 +5,7 @@ import Login from '~/pages/Login';
 import Dashboard from '~/pages/Dashboard';
 import DataViewCalender from '~/components/DataViewCalender';
 import DataViewAIP from '~/components/DataViewAIP';
+import Assign from '~/components/AssignTask';
 
 //Đăng nhập xong mới xem được
 const publicRoutes = [

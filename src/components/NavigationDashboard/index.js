@@ -17,6 +17,9 @@ function NavigationDashboard() {
                 <li className={cx('nav-item')}>
                     <a href="/dashboard/dataviewguardian">Guardian</a>
                 </li>
+                <li className={cx('nav-item')}>
+                    <a href="/dashboard/assign">Assign</a>
+                </li>
             </ul>
             <ul className={cx('nav-list')}>
                 Report

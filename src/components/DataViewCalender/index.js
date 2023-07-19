@@ -68,13 +68,21 @@ function DataViewCalender() {
     return (
         <div className={cx('data-view')}>
             <h2>Dữ liệu tổng quát Calender</h2>
-            <div style={{ margin: '10px' }}>
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    style={{ padding: '4px' }}
-                    onChange={handleFilter}
-                />
+            <div className={cx('header-data-view')}>
+                <div style={{ margin: '10px' }}>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        style={{ padding: '4px' }}
+                        onChange={() => {}}
+                    />
+                </div>
+                <button
+                    className={cx('btn-add')}
+                    onClick={() => {}}
+                >
+                    ADD Task
+                </button>
             </div>
             <DataTable columns={column} data={records} pagination></DataTable>
         </div>
