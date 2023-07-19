@@ -9,13 +9,13 @@ function NavigationDashboard() {
             <ul className={cx('nav-list')}>
                 Dashboard
                 <li className={cx('nav-item')}>
-                    <a href="dataviewcalender">Calender</a>
+                    <a href="/dashboard/dataviewcalender">Calender</a>
                 </li>
                 <li className={cx('nav-item')}>
-                    <a href="dataviewaip">API</a>
+                    <a href="/dashboard/dataviewaip">API</a>
                 </li>
                 <li className={cx('nav-item')}>
-                    <a href="dataviewguardian">Guardian</a>
+                    <a href="/dashboard/dataviewguardian">Guardian</a>
                 </li>
             </ul>
             <ul className={cx('nav-list')}>

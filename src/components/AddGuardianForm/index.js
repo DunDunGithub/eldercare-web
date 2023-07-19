@@ -1,38 +1,44 @@
 import classNames from 'classnames/bind';
-import styles from './EditPopup.module.scss';
-
+import styles from './AddGuardian.module.scss';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { Button } from 'antd';
+import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
-function EditPopup(props) {
-    const selectedData = props.selectedData;
-    const handleSelectedDataChange = props.handleSelectedDataChange;
+function AddGuardianForm(props) {
+    const [guardianData, setGuardianData] = useState({
+        firstName: '',
+        lastName: '',
+        CCCD: '',
+        phoneNumber: '',
+        dateOfBirth: '',
+        address: '',
+    });
 
-    const updateData = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
-        try {
-            const response = await axios.put(
-                `https://eldercare.up.railway.app/aip/${selectedData._id}`,
-                selectedData,
-            );
-            console.log(response.data); // Handle the response from the API
-            props.onAIPUpdated();
-            props.setTrigger(false);
-        } catch (error) {
-            console.error(error); // Handle the error
-        }
+        axios
+            .post('https://eldercare.up.railway.app/guardian', guardianData)
+            .then((res) => {
+                // Call the callback function to trigger table update in DataViewAIP
+                props.onGuardianAdded();
+                props.onAdd();
+                // Reset the form fields
+                setGuardianData({
+                    firstName: '',
+                    lastName: '',
+                    CCCD: '',
+                    phoneNumber: '',
+                    dateOfBirth: '',
+                    address: '',
+                });
+            })
+            .catch((err) => console.log(err));
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        handleSelectedDataChange((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+        setGuardianData({ ...guardianData, [e.target.name]: String(e.target.value) });
     };
 
     return props.trigger ? (
@@ -41,20 +47,19 @@ function EditPopup(props) {
                 <button
                     className={cx('btn-close')}
                     onClick={() => props.setTrigger(false)}
+                    style={{padding:'4px', width:'80px'}}
                 >
                     Close
                 </button>
 
-                <form noValidate onSubmit={updateData}>
-                    <h3>EDIT AIP</h3>
-
-                    {/* First name */}
+                <h3>ADD Guardian</h3>
+                <form noValidate onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="firstName">First name</label>
                         <input
                             name="firstName"
                             placeholder="First name"
-                            value={selectedData.firstName}
+                            value={guardianData.firstName}
                             onChange={handleChange}
                             required
                         />
@@ -65,7 +70,7 @@ function EditPopup(props) {
                         <input
                             name="lastName"
                             placeholder="Last name"
-                            value={selectedData.lastName}
+                            value={guardianData.lastName}
                             onChange={handleChange}
                             required
                         />
@@ -76,7 +81,7 @@ function EditPopup(props) {
                         <input
                             name="dateOfBirth"
                             placeholder="Date of birth"
-                            value={selectedData.dateOfBirth}
+                            value={guardianData.dateOfBirth}
                             onChange={handleChange}
                             required
                         />
@@ -87,18 +92,18 @@ function EditPopup(props) {
                         <input
                             name="CCCD"
                             placeholder="CCCD"
-                            value={selectedData.CCCD}
+                            value={guardianData.CCCD}
                             onChange={handleChange}
                             required
                         />
                     </div>
                     {/* Phone number */}
                     <div>
-                        <label htmlFor="phoneNumber">Phone number</label>
+                        <label htmlFor="phone">Phone number</label>
                         <input
                             name="phoneNumber"
                             placeholder="Phone number"
-                            value={selectedData.phoneNumber}
+                            value={guardianData.phoneNumber}
                             onChange={handleChange}
                             required
                         />
@@ -109,19 +114,13 @@ function EditPopup(props) {
                         <input
                             name="address"
                             placeholder="Address"
-                            value={selectedData.address}
+                            value={guardianData.address}
                             onChange={handleChange}
                             required
                         />
                     </div>
 
-                    {/* Health condition */}
-                    <div>
-                        <label htmlFor="health">Health condition</label>
-                        <input name="health" placeholder="CCCD" required />
-                    </div>
-
-                    <button type="submit">Update</button>
+                    <button type="submit" style={{width:'80px'}}>Submit</button>
                 </form>
             </div>
         </div>
@@ -130,4 +129,4 @@ function EditPopup(props) {
     );
 }
 
-export default EditPopup;
+export default AddGuardianForm;

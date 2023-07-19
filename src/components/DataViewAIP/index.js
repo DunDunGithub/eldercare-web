@@ -7,14 +7,11 @@ import classNames from 'classnames/bind';
 import styles from './DataViewAIP.module.scss';
 import AddAIPForm from '../AddAIPForm';
 import RemovePopup from '../RemovePopup';
-import EditPopup from '../EditPopup';
+import EditPopup from '../EditAIPPopup';
 
 const cx = classNames.bind(styles);
 
-let count = 0;
-
 function DataViewAIP() {
-
     const [selectedData, setSelectedData] = useState({});
 
     const handleEditButton = (row) => {
@@ -24,7 +21,9 @@ function DataViewAIP() {
     const handleRemoveButton = async (row) => {
         try {
             if (window.confirm('Are you sure you wish to delete this item?')) {
-                await axios.delete(`https://eldercare.up.railway.app/aip/${row._id}`);
+                await axios.delete(
+                    `https://eldercare.up.railway.app/aip/${row._id}`,
+                );
                 fetchData(); // Refresh the table data after successful deletion
             }
         } catch (error) {
@@ -64,12 +63,10 @@ function DataViewAIP() {
             name: 'Edit',
             cell: (row) => (
                 <button
-                    onClick={() => 
-                        {
-                            handleEditButton(row);
-                            seteditPopup(true);
-                        }
-                    }
+                    onClick={() => {
+                        handleEditButton(row);
+                        seteditPopup(true);
+                    }}
                     style={{ width: '60px', height: '30px' }}
                 >
                     Edit
@@ -123,7 +120,7 @@ function DataViewAIP() {
     };
 
     const [popupAdd, setpopupAdd] = useState(false);
-    const [removePopup, setremovePopup] = useState(false);
+    // const [removePopup, setremovePopup] = useState(false);
     const [editPopup, seteditPopup] = useState(false);
 
     const handlePopupAdd = () => {
@@ -149,15 +146,10 @@ function DataViewAIP() {
                     ADD AIP
                 </button>
             </div>
-            <DataTable
-                columns={column}
-                data={records}
-                pagination
-            ></DataTable>
+            <DataTable columns={column} data={records} pagination></DataTable>
 
             {/* Remove */}
-            <RemovePopup
-            ></RemovePopup>
+            <RemovePopup></RemovePopup>
 
             {/* Edit */}
             <EditPopup
