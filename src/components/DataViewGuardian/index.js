@@ -123,7 +123,7 @@ function DataViewGuardian() {
 
     const handleFilter = (event) => {
         const newData = filterRecords.filter((row) =>
-            row.name.toLowerCase().includes(event.target.value.toLowerCase()),
+            row.firstName.toLowerCase().includes(event.target.value.toLowerCase()),
         );
         setRecords(newData);
     };

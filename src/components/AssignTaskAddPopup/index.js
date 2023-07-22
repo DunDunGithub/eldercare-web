@@ -10,7 +10,7 @@ function AssignTaskAddPopup(props) {
     const [taskData, setTaskData] = useState({
         title: '',
         detail: '',
-        isDone: '',
+        isDone: false,
         startTime: '',
         endTime: '',
         guardian: '',
@@ -30,7 +30,7 @@ function AssignTaskAddPopup(props) {
                 setTaskData({
                     title: '',
                     detail: '',
-                    isDone: '',
+                    isDone: false,
                     startTime: '',
                     endTime: '',
                     guardian: '',
@@ -41,7 +41,11 @@ function AssignTaskAddPopup(props) {
     };
 
     const handleChange = (e) => {
-        setTaskData({ ...taskData, [e.target.name]: String(e.target.value) });
+        const { name, value, type } = e.target;
+        
+        const newValue = type === 'checkbox' ? e.target.checked : value;
+
+        setTaskData({ ...taskData, [name]: newValue });
     };
 
     return props.trigger ? (
@@ -81,6 +85,7 @@ function AssignTaskAddPopup(props) {
                     <div>
                         <label htmlFor="isDone">Status</label>
                         <input
+                            type="checkbox"
                             name="isDone"
                             placeholder="Status"
                             value={taskData.isDone}

@@ -12,7 +12,7 @@ function NavigationDashboard() {
                     <a href="/dashboard/dataviewcalender">Calender</a>
                 </li>
                 <li className={cx('nav-item')}>
-                    <a href="/dashboard/dataviewaip">API</a>
+                    <a href="/dashboard/dataviewaip">AIP</a>
                 </li>
                 <li className={cx('nav-item')}>
                     <a href="/dashboard/dataviewguardian">Guardian</a>
