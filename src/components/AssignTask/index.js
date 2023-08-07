@@ -5,12 +5,15 @@ import styles from './AssignTask.module.scss';
 import DataTable from 'react-data-table-component';
 import AssignTaskAddPopup from '../AssignTaskAddPopup';
 import DetailTask from '../DetailTask';
+import LoadingPopup from '../LoadingPopup';
 
 const cx = classNames.bind(styles);
 
 function Assign() {
 
     const [selectedData, setSelectedData] = useState({});
+
+    const [loading, setLoading] = useState(false);
 
     const handleEditButton = (row) => {
         setSelectedData(row);
@@ -65,13 +68,16 @@ function Assign() {
     ];
 
     const fetchData = async () => {
-        axios
-            .get('https://eldercare.up.railway.app/task')
-            .then((res) => {
-                setRecords(res.data);
-                setFilterRecords(res.data);
-            })
-            .catch((err) => console.log(err));
+        setLoading(true); // Show loading popup
+        try {
+            const response = await axios.get('https://eldercare.cyclic.cloud/task');
+            setRecords(response.data);
+            setFilterRecords(response.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false); // Hide loading popup regardless of success or failure
+        }
     };
 
     useEffect(() => {
@@ -115,10 +121,13 @@ function Assign() {
                     className={cx('btn-add')}
                     onClick={() => setpopupAdd(true)}
                 >
-                    Add
+                    Add more task
                 </button>
             </div>
             <DataTable columns={column} data={records} pagination></DataTable>
+
+            {/* Loading Popup */}
+            {loading && <LoadingPopup/>}
             {/* Add AIP */}
             <AssignTaskAddPopup
                 trigger={popupAdd}

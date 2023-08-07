@@ -3,6 +3,7 @@ import styles from './AssignTaskAddPopup.module.scss';
 
 import { useState } from 'react';
 import axios from 'axios';
+import DateTimePicker from '../DateTimePicker';
 
 const cx = classNames.bind(styles);
 
@@ -11,17 +12,20 @@ function AssignTaskAddPopup(props) {
         title: '',
         detail: '',
         isDone: false,
-        startTime: '',
-        endTime: '',
+        isCycle: false,
         guardian: '',
         aip: '',
+        schedule: '',
+        note: ''
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        console.log(taskData);
+
         axios
-            .post('https://eldercare.up.railway.app/task', taskData)
+            .post('https://eldercare.cyclic.cloud/tasks', taskData)
             .then((res) => {
                 // Call the callback function to trigger table update in DataViewAIP
                 props.onAssignTaskAdded();
@@ -31,8 +35,8 @@ function AssignTaskAddPopup(props) {
                     title: '',
                     detail: '',
                     isDone: false,
-                    startTime: '',
-                    endTime: '',
+                    startTime: new Date(),
+                    endTime: new Date(),
                     guardian: '',
                     aip: '',
                 });
@@ -40,12 +44,19 @@ function AssignTaskAddPopup(props) {
             .catch((err) => console.log(err));
     };
 
-    const handleChange = (e) => {
-        const { name, value, type } = e.target;
-        
-        const newValue = type === 'checkbox' ? e.target.checked : value;
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setTaskData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
+    };
 
-        setTaskData({ ...taskData, [name]: newValue });
+    const handleDateChange = (fieldName, date) => {
+        setTaskData((prevData) => ({
+            ...prevData,
+            [fieldName]: date,
+        }));
     };
 
     return props.trigger ? (
@@ -58,7 +69,7 @@ function AssignTaskAddPopup(props) {
                     Close
                 </button>
 
-                <h3>ADD AIP</h3>
+                <h3>ADD Task for Guardian</h3>
                 <form noValidate onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="title">Title</label>
@@ -82,7 +93,7 @@ function AssignTaskAddPopup(props) {
                         />
                     </div>
                     {/* Date of birth */}
-                    <div>
+                    {/* <div>
                         <label htmlFor="isDone">Status</label>
                         <input
                             type="checkbox"
@@ -92,26 +103,26 @@ function AssignTaskAddPopup(props) {
                             onChange={handleChange}
                             required
                         />
-                    </div>
-                    {/* CCCD */}
+                    </div> */}
+
                     <div>
                         <label htmlFor="startTime">Start time</label>
-                        <input
-                            name="startTime"
-                            placeholder="Start Time"
-                            value={taskData.startTime}
-                            onChange={handleChange}
+                        <DateTimePicker
+                            selectedDate={taskData.startTime}
+                            onSelectDate={(date) =>
+                                handleDateChange('startTime', date)
+                            }
                             required
                         />
                     </div>
                     {/* Phone number */}
                     <div>
                         <label htmlFor="endTime">End time</label>
-                        <input
-                            name="endTime"
-                            placeholder="End time"
-                            value={taskData.endTime}
-                            onChange={handleChange}
+                        <DateTimePicker
+                            selectedDate={taskData.endTime}
+                            onSelectDate={(date) =>
+                                handleDateChange('endTime', date)
+                            }
                             required
                         />
                     </div>

@@ -4,28 +4,29 @@ import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 
 import classNames from 'classnames/bind';
-import styles from './DataViewAIP.module.scss';
-import AddAIPForm from '../AddAIPForm';
+import styles from './GuardianAIP.module.scss';
+import AddGuardianForm from '../AddGuardianForm';
+import EditGuardianPopup from '../EditGuardianPopup';
 import RemovePopup from '../RemovePopup';
-import EditPopup from '../EditAIPPopup';
-import LoadingPopup from '../LoadingPopup';
 
 const cx = classNames.bind(styles);
 
-function DataViewAIP() {
-    const [selectedData, setSelectedData] = useState({});
+function GuardianAIP() {
+    const [popupAdd, setpopupAdd] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+    const [editPopup, seteditPopup] = useState(false);
+
+    const [selectedData, setSelectedData] = useState({});
 
     const handleEditButton = (row) => {
         setSelectedData(row);
     };
 
     const handleRemoveButton = async (row) => {
-        try {
+        try { 
             if (window.confirm('Are you sure you wish to delete this item?')) {
                 await axios.delete(
-                    `https://eldercare.up.railway.app/aip/${row._id}`,
+                    `https://eldercare.up.railway.app/guardian/${row._id}`,
                 );
                 fetchData(); // Refresh the table data after successful deletion
             }
@@ -92,27 +93,28 @@ function DataViewAIP() {
     ];
 
     const fetchData = async () => {
-        setLoading(true); // Show loading popup
-        try {
-            const response = await axios.get('https://eldercare.cyclic.cloud/aip');
-            setRecords(response.data);
-            setFilterRecords(response.data);
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false); // Hide loading popup regardless of success or failure
-        }
+        axios
+            .get('https://eldercare.up.railway.app/guardian')
+            .then((res) => {
+                setRecords(res.data);
+                setFilterRecords(res.data);
+            })
+            .catch((err) => console.log(err));
     };
 
     useEffect(() => {
         fetchData();
     }, []);
 
-    const handleAIPAdded = () => {
+    const handlePopupAdd = () => {
+        setpopupAdd(false);
+    };
+
+    const handleGuardianAdded = () => {
         fetchData();
     };
 
-    const handleAIPUpdated = () => {
+    const handleGuardianUpdated = () => {
         fetchData();
     };
 
@@ -121,86 +123,53 @@ function DataViewAIP() {
 
     const handleFilter = (event) => {
         const newData = filterRecords.filter((row) =>
-            row[searchAttribute]
-                .toLowerCase()
-                .includes(event.target.value.toLowerCase()),
+            row.firstName.toLowerCase().includes(event.target.value.toLowerCase()),
         );
         setRecords(newData);
     };
 
-    const [popupAdd, setpopupAdd] = useState(false);
-    // const [removePopup, setremovePopup] = useState(false);
-    const [editPopup, seteditPopup] = useState(false);
-
-    const handlePopupAdd = () => {
-        setpopupAdd(false);
-    };
-
-    const [searchAttribute, setSearchAttribute] = useState('firstName');
-
-    const handleSearchAttributeChange = (event) => {
-        setSearchAttribute(event.target.value);
-    };
-
     return (
         <div className={cx('data-view')}>
-            <h2>Dữ liệu tổng quát AIP</h2>
+            <h2>Phân công Guardian cho AIP</h2>
             <div className={cx('header-data-view')}>
                 <div style={{ margin: '10px' }}>
                     <input
                         type="text"
-                        placeholder={`Search by ${searchAttribute}...`}
-                        style={{ padding: '4px', width:'250px' }}
+                        placeholder="Search..."
+                        style={{ padding: '4px' }}
                         onChange={handleFilter}
                     />
-
-                    <select
-                        value={searchAttribute}
-                        onChange={handleSearchAttributeChange}
-                        className={cx('select-item')}
-                    >
-                        <option value="firstName">First Name</option>
-                        <option value="lastName">Last Name</option>
-                        <option value="CCCD">CCCD</option>
-                        <option value="dateOfBirth">Date of Birth</option>
-                        <option value="phoneNumber">Phone number</option>
-                        <option value="address">Address</option>
-                        {/* Add more options for other attributes */}
-                    </select>
                 </div>
                 <button
                     className={cx('btn-add')}
                     onClick={() => setpopupAdd(true)}
                 >
-                    ADD AIP
+                    Add Guardian
                 </button>
             </div>
             <DataTable columns={column} data={records} pagination></DataTable>
-
-            {/* Loading Popup */}
-            {loading && <LoadingPopup/>}
 
             {/* Remove */}
             <RemovePopup></RemovePopup>
 
             {/* Edit */}
-            <EditPopup
+            <EditGuardianPopup
                 trigger={editPopup}
                 setTrigger={seteditPopup}
                 selectedData={selectedData}
-                onAIPUpdated={handleAIPUpdated}
+                onGuardianUpdated={handleGuardianUpdated}
                 handleSelectedDataChange={handleEditButton}
-            ></EditPopup>
+            ></EditGuardianPopup>
 
             {/* Add AIP */}
-            <AddAIPForm
+            <AddGuardianForm
                 trigger={popupAdd}
                 setTrigger={setpopupAdd}
-                onAIPAdded={handleAIPAdded}
+                onGuardianAdded={handleGuardianAdded}
                 onAdd={handlePopupAdd}
-            ></AddAIPForm>
+            ></AddGuardianForm>
         </div>
     );
 }
 
-export default DataViewAIP;
+export default GuardianAIP;

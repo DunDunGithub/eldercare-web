@@ -8,6 +8,7 @@ import styles from './DataViewGuardian.module.scss';
 import AddGuardianForm from '../AddGuardianForm';
 import EditGuardianPopup from '../EditGuardianPopup';
 import RemovePopup from '../RemovePopup';
+import LoadingPopup from '../LoadingPopup';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,8 @@ function DataViewGuardian() {
 
     const [selectedData, setSelectedData] = useState({});
 
+    const [loading, setLoading] = useState(false);
+
     const handleEditButton = (row) => {
         setSelectedData(row);
     };
@@ -26,7 +29,7 @@ function DataViewGuardian() {
         try {
             if (window.confirm('Are you sure you wish to delete this item?')) {
                 await axios.delete(
-                    `https://eldercare.up.railway.app/guardian/${row._id}`,
+                    `https://eldercare.cyclic.cloud/guardian/${row._id}`,
                 );
                 fetchData(); // Refresh the table data after successful deletion
             }
@@ -63,43 +66,21 @@ function DataViewGuardian() {
             name: 'Address',
             selector: (row) => row.address,
         },
-        {
-            name: 'Edit',
-            cell: (row) => (
-                <button
-                    onClick={() => {
-                        handleEditButton(row);
-                        seteditPopup(true);
-                    }}
-                    style={{ width: '60px', height: '30px' }}
-                >
-                    Edit
-                </button>
-            ),
-        },
-        {
-            name: 'Remove',
-            cell: (row) => (
-                <button
-                    onClick={() => {
-                        handleRemoveButton(row);
-                    }}
-                    style={{ width: '80px', height: '30px' }}
-                >
-                    Remove
-                </button>
-            ),
-        },
     ];
 
     const fetchData = async () => {
-        axios
-            .get('https://eldercare.up.railway.app/guardian')
-            .then((res) => {
-                setRecords(res.data);
-                setFilterRecords(res.data);
-            })
-            .catch((err) => console.log(err));
+        setLoading(true); // Show loading popup
+        try {
+            const response = await axios.get(
+                'https://eldercare.cyclic.cloud/guardian',
+            );
+            setRecords(response.data);
+            setFilterRecords(response.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false); // Hide loading popup regardless of success or failure
+        }
     };
 
     useEffect(() => {
@@ -123,10 +104,87 @@ function DataViewGuardian() {
 
     const handleFilter = (event) => {
         const newData = filterRecords.filter((row) =>
-            row.firstName.toLowerCase().includes(event.target.value.toLowerCase()),
+            row[searchAttribute]
+                .toLowerCase()
+                .includes(event.target.value.toLowerCase()),
         );
         setRecords(newData);
     };
+
+    const [searchAttribute, setSearchAttribute] = useState('firstName');
+
+    const handleSearchAttributeChange = (event) => {
+        setSearchAttribute(event.target.value);
+    };
+
+    const columnsWithCertificate = [
+        ...column,
+        {
+            name: 'Certificate',
+            cell: (row) => (
+                <div>
+                    {row.certificates && row.certificates.length > 0 ? (
+                        <ul>
+                            {row.certificates.map((certificate) => (
+                                <li key={certificate._id}>
+                                    {certificate.title}
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No certificates</p>
+                    )}
+                </div>
+            ),
+        },
+        {
+            name: 'Content of Certificate',
+            cell: (row) => (
+                <div>
+                    {row.certificates && row.certificates.length > 0 ? (
+                        <ul>
+                            {row.certificates.map((certificate) => (
+                                <li key={certificate._id}>
+                                    {certificate.description}
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No certificates</p>
+                    )}
+                </div>
+            ),
+        },
+        {
+            name: 'Edit',
+            cell: (row) => (
+                <div>
+                    <button
+                        onClick={() => {
+                            handleEditButton(row);
+                            seteditPopup(true);
+                        }}
+                        style={{ width: '60px', height: '30px' }}
+                    >
+                        Edit
+                    </button>
+                </div>
+            ),
+        },
+        {
+            name: 'Remove',
+            cell: (row) => (
+                <button
+                    onClick={() => {
+                        handleRemoveButton(row);
+                    }}
+                    style={{ width: '80px', height: '30px' }}
+                >
+                    Remove
+                </button>
+            ),
+        },
+    ];
 
     return (
         <div className={cx('data-view')}>
@@ -135,10 +193,23 @@ function DataViewGuardian() {
                 <div style={{ margin: '10px' }}>
                     <input
                         type="text"
-                        placeholder="Search..."
-                        style={{ padding: '4px' }}
+                        placeholder={`Search by ${searchAttribute}...`}
+                        style={{ padding: '4px', width: '250px' }}
                         onChange={handleFilter}
                     />
+                    <select
+                        value={searchAttribute}
+                        onChange={handleSearchAttributeChange}
+                        className={cx('select-item')}
+                    >
+                        <option value="firstName">First Name</option>
+                        <option value="lastName">Last Name</option>
+                        <option value="CCCD">CCCD</option>
+                        <option value="dateOfBirth">Date of Birth</option>
+                        <option value="phoneNumber">Phone number</option>
+                        <option value="address">Address</option>
+                        {/* Add more options for other attributes */}
+                    </select>
                 </div>
                 <button
                     className={cx('btn-add')}
@@ -147,7 +218,14 @@ function DataViewGuardian() {
                     Add Guardian
                 </button>
             </div>
-            <DataTable columns={column} data={records} pagination></DataTable>
+            <DataTable
+                columns={columnsWithCertificate}
+                data={records}
+                pagination
+            ></DataTable>
+
+            {/* Loading Popup */}
+            {loading && <LoadingPopup />}
 
             {/* Remove */}
             <RemovePopup></RemovePopup>

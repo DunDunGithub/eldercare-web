@@ -2,8 +2,6 @@ import classNames from 'classnames/bind';
 import styles from './EditAIPPopup.module.scss';
 
 import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { Button } from 'antd';
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +14,7 @@ function EditPopup(props) {
 
         try {
             const response = await axios.put(
-                `https://eldercare.up.railway.app/aip/${selectedData._id}`,
+                `https://eldercare.cyclic.cloud/aip/${selectedData._id}`,
                 selectedData,
             );
             console.log(response.data); // Handle the response from the API

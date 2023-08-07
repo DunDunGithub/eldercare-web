@@ -19,7 +19,7 @@ function AddAIPForm(props) {
         e.preventDefault();
 
         axios
-            .post('https://eldercare.up.railway.app/aip', aipData)
+            .post('https://eldercare.cyclic.cloud/aip', aipData)
             .then((res) => {
                 // Call the callback function to trigger table update in DataViewAIP
                 props.onAIPAdded();
