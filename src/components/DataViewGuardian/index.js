@@ -66,6 +66,10 @@ function DataViewGuardian() {
             name: 'Address',
             selector: (row) => row.address,
         },
+        {
+            name: 'Level',
+            selector: (row) => row.level,
+        },
     ];
 
     const fetchData = async () => {

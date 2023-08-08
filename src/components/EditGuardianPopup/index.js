@@ -1,12 +1,14 @@
 import classNames from 'classnames/bind';
 import styles from './EditGuardianPopup.module.scss';
-
+import DatePicker from 'react-datepicker';
 import axios from 'axios';
+import { parse, format } from 'date-fns';
 
 const cx = classNames.bind(styles);
 
 function EditGuardianPopup(props) {
     const selectedData = props.selectedData;
+
     const handleSelectedDataChange = props.handleSelectedDataChange;
 
     const updateData = async (e) => {
@@ -25,13 +27,30 @@ function EditGuardianPopup(props) {
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        handleSelectedDataChange((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+    const handleChange = (name, value) => {
+        console.log('CHECK DATE: ', value);
+        if (name === 'dateOfBirth') {
+            const parsedDate = new Date(value);
+            const formattedDate = `${parsedDate.getDate()}/${
+                parsedDate.getMonth() + 1
+            }/${parsedDate.getFullYear()}`;
+            handleSelectedDataChange((prevData) => ({
+                ...prevData,
+                [name]: formattedDate,
+            }));
+        } else {
+            handleSelectedDataChange((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
     };
+
+    function stringToDate(dateString) {
+        return parse(dateString, 'dd/MM/yyyy', new Date());
+    }
+
+    const dateOfBirthNew = stringToDate(selectedData.dateOfBirth);
 
     return props.trigger ? (
         <div className={cx('popup')}>
@@ -44,7 +63,7 @@ function EditGuardianPopup(props) {
                 </button>
 
                 <form noValidate onSubmit={updateData}>
-                    <h3>EDIT AIP</h3>
+                    <h3>Edit Guardian Information</h3>
 
                     {/* First name */}
                     <div>
@@ -53,10 +72,13 @@ function EditGuardianPopup(props) {
                             name="firstName"
                             placeholder="First name"
                             value={selectedData.firstName}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('firstName', e.target.value)
+                            }
                             required
                         />
                     </div>
+
                     {/* Last name */}
                     <div>
                         <label htmlFor="lastName">Last name</label>
@@ -64,21 +86,32 @@ function EditGuardianPopup(props) {
                             name="lastName"
                             placeholder="Last name"
                             value={selectedData.lastName}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('lastName', e.target.value)
+                            }
                             required
                         />
                     </div>
+
                     {/* Date of birth */}
-                    <div>
+                    <div style={{ marginBottom: -10 }}>
                         <label htmlFor="dateOfBirth">Date of birth</label>
-                        <input
-                            name="dateOfBirth"
-                            placeholder="Date of birth"
-                            value={selectedData.dateOfBirth}
-                            onChange={handleChange}
-                            required
+                        <br />
+                        <DatePicker
+                            id="dateOfBirth"
+                            selected={dateOfBirthNew}
+                            onChange={(date) =>
+                                handleChange('dateOfBirth', date)
+                            }
+                            dateFormat="dd/MM/yyyy"
+                            showYearDropdown
+                            scrollableYearDropdown
+                            yearDropdownItemNumber={100}
+                            placeholderText="Select Date of Birth"
+                            className={cx('custom-datepicker')}
                         />
                     </div>
+
                     {/* CCCD */}
                     <div>
                         <label htmlFor="CCCD">CCCD</label>
@@ -86,10 +119,13 @@ function EditGuardianPopup(props) {
                             name="CCCD"
                             placeholder="CCCD"
                             value={selectedData.CCCD}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('CCCD', e.target.value)
+                            }
                             required
                         />
                     </div>
+
                     {/* Phone number */}
                     <div>
                         <label htmlFor="phoneNumber">Phone number</label>
@@ -97,7 +133,9 @@ function EditGuardianPopup(props) {
                             name="phoneNumber"
                             placeholder="Phone number"
                             value={selectedData.phoneNumber}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('phoneNumber', e.target.value)
+                            }
                             required
                         />
                     </div>
@@ -108,12 +146,31 @@ function EditGuardianPopup(props) {
                             name="address"
                             placeholder="Address"
                             value={selectedData.address}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('address', e.target.value)
+                            }
                             required
                         />
                     </div>
 
-                    <button type="submit">Update</button>
+                    {/* Level */}
+                    <div>
+                        <label htmlFor="level">Level</label>
+                        <select
+                            id="level"
+                            value={selectedData.level}
+                            onChange={(e) =>
+                                handleChange('level', e.target.value)
+                            }
+                        >
+                            <option value="Amateur">Amateur</option>
+                            <option value="Professional">Professional</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" style={{ padding: '4px 10px' }}>
+                        Update
+                    </button>
                 </form>
             </div>
         </div>
