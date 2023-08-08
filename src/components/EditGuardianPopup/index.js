@@ -28,7 +28,6 @@ function EditGuardianPopup(props) {
     };
 
     const handleChange = (name, value) => {
-        console.log('CHECK DATE: ', value);
         if (name === 'dateOfBirth') {
             const parsedDate = new Date(value);
             const formattedDate = `${parsedDate.getDate()}/${

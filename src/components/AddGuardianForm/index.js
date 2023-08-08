@@ -42,11 +42,26 @@ function AddGuardianForm(props) {
     };
 
     const handleChange = (name, value) => {
-        setGuardianData((prevData) => ({
-          ...prevData,
-          [name]: value,
-        }));
-      };
+        if (name === 'dateOfBirth') {
+            const parsedDate = new Date(value);
+            const formattedDate = `${parsedDate.getDate()}/${
+                parsedDate.getMonth() + 1
+            }/${parsedDate.getFullYear()}`;
+            setGuardianData((prevData) => ({
+                ...prevData,
+                [name]: formattedDate,
+            }));
+        } else {
+            setGuardianData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
+    };
+
+    function stringToDate(dateString) {
+        return parse(dateString, 'dd/MM/yyyy', new Date());
+    }
 
     return props.trigger ? (
         <div className={cx('popup')}>
@@ -87,7 +102,7 @@ function AddGuardianForm(props) {
                         <label htmlFor="dateOfBirth">Date of birth</label>
                         <DatePicker
                             id="dateOfBirth"
-                            selected={guardianData.dateOfBirth}
+                            selected={guardianData.dateOfBirth ? stringToDate(guardianData.dateOfBirth) : null}
                             onChange={(date) => handleChange('dateOfBirth', date)}
                             dateFormat="dd/MM/yyyy"
                             showYearDropdown
