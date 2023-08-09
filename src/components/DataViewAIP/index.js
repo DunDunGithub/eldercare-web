@@ -63,6 +63,14 @@ function DataViewAIP() {
             selector: (row) => row.address,
         },
         {
+            name: 'Health Status',
+            selector: (row) => row.healthStatus,
+        },
+        {
+            name: 'Note',
+            selector: (row) => row.note,
+        },
+        {
             name: 'Edit',
             cell: (row) => (
                 <button

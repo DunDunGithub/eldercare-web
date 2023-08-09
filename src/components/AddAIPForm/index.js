@@ -2,6 +2,8 @@ import classNames from 'classnames/bind';
 import styles from './AddAIPForm.module.scss';
 import axios from 'axios';
 import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import { parse, format } from 'date-fns';
 
 const cx = classNames.bind(styles);
 
@@ -11,8 +13,10 @@ function AddAIPForm(props) {
         lastName: '',
         CCCD: '',
         phoneNumber: '',
-        dateOfBirth: '',
+        dateOfBirth: null,
         address: '',
+        healthStatus: '',
+        note: ''
     });
 
     const handleSubmit = (e) => {
@@ -30,16 +34,36 @@ function AddAIPForm(props) {
                     lastName: '',
                     CCCD: '',
                     phoneNumber: '',
-                    dateOfBirth: '',
+                    dateOfBirth: null,
                     address: '',
+                    healthStatus: '',
+                    note: ''
                 });
             })
             .catch((err) => console.log(err));
     };
 
-    const handleChange = (e) => {
-        setAipData({ ...aipData, [e.target.name]: String(e.target.value) });
+    const handleChange = (name, value) => {
+        if (name === 'dateOfBirth') {
+            const parsedDate = new Date(value);
+            const formattedDate = `${parsedDate.getDate()}/${
+                parsedDate.getMonth() + 1
+            }/${parsedDate.getFullYear()}`;
+            setAipData((prevData) => ({
+                ...prevData,
+                [name]: formattedDate,
+            }));
+        } else {
+            setAipData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
     };
+
+    function stringToDate(dateString) {
+        return parse(dateString, 'dd/MM/yyyy', new Date());
+    }
 
     return props.trigger ? (
         <div className={cx('popup')}>
@@ -59,7 +83,7 @@ function AddAIPForm(props) {
                             name="firstName"
                             placeholder="First name"
                             value={aipData.firstName}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange('firstName', e.target.value)}
                             required
                         />
                     </div>
@@ -70,19 +94,23 @@ function AddAIPForm(props) {
                             name="lastName"
                             placeholder="Last name"
                             value={aipData.lastName}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange('lastName', e.target.value)}
                             required
                         />
                     </div>
                     {/* Date of birth */}
-                    <div>
+                    <div style={{ marginBottom: -10 }}>
                         <label htmlFor="dateOfBirth">Date of birth</label>
-                        <input
-                            name="dateOfBirth"
-                            placeholder="Date of birth"
-                            value={aipData.dateOfBirth}
-                            onChange={handleChange}
-                            required
+                        <DatePicker
+                            id="dateOfBirth"
+                            selected={aipData.dateOfBirth ? stringToDate(aipData.dateOfBirth) : null}
+                            onChange={(date) => handleChange('dateOfBirth', date)}
+                            dateFormat="dd/MM/yyyy"
+                            showYearDropdown
+                            scrollableYearDropdown
+                            yearDropdownItemNumber={100}
+                            placeholderText="Select Date of Birth"
+                            className={cx('custom-datepicker')}
                         />
                     </div>
                     {/* CCCD */}
@@ -92,7 +120,7 @@ function AddAIPForm(props) {
                             name="CCCD"
                             placeholder="CCCD"
                             value={aipData.CCCD}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange('CCCD', e.target.value)}
                             required
                         />
                     </div>
@@ -103,7 +131,7 @@ function AddAIPForm(props) {
                             name="phoneNumber"
                             placeholder="Phone number"
                             value={aipData.phoneNumber}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange('phoneNumber', e.target.value)}
                             required
                         />
                     </div>
@@ -114,15 +142,37 @@ function AddAIPForm(props) {
                             name="address"
                             placeholder="Address"
                             value={aipData.address}
-                            onChange={handleChange}
+                            onChange={(e) => handleChange('address', e.target.value)}
                             required
                         />
                     </div>
 
-                    {/* Health condition */}
+                    {/* Health Status */}
                     <div>
-                        <label htmlFor="health">Health condition</label>
-                        <input name="health" placeholder="CCCD" />
+                        <label htmlFor="healthStatus">Health status</label>
+                        <input
+                            name="healthStatus"
+                            placeholder="Health status"
+                            value={aipData.healthStatus}
+                            onChange={(e) =>
+                                handleChange('healthStatus', e.target.value)
+                            }
+                            required
+                        />
+                    </div>
+
+                    {/* Note */}
+                    <div>
+                        <label htmlFor="note">Note</label>
+                        <input
+                            name="note"
+                            placeholder="Note"
+                            value={aipData.note}
+                            onChange={(e) =>
+                                handleChange('note', e.target.value)
+                            }
+                            required
+                        />
                     </div>
 
                     <button type="submit">Submit</button>

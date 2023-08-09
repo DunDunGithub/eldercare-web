@@ -1,8 +1,10 @@
 import classNames from 'classnames/bind';
 import styles from './EditAIPPopup.module.scss';
-
+import DatePicker from 'react-datepicker';
 import axios from 'axios';
+import { parse, format } from 'date-fns';
 
+ 
 const cx = classNames.bind(styles);
 
 function EditPopup(props) {
@@ -11,7 +13,6 @@ function EditPopup(props) {
 
     const updateData = async (e) => {
         e.preventDefault();
-
         try {
             const response = await axios.put(
                 `https://eldercare.cyclic.cloud/aip/${selectedData._id}`,
@@ -25,13 +26,29 @@ function EditPopup(props) {
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        handleSelectedDataChange((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
+    const handleChange = (name, value) => {
+        if (name === 'dateOfBirth') {
+            const parsedDate = new Date(value);
+            const formattedDate = `${parsedDate.getDate()}/${
+                parsedDate.getMonth() + 1
+            }/${parsedDate.getFullYear()}`;
+            handleSelectedDataChange((prevData) => ({
+                ...prevData,
+                [name]: formattedDate,
+            }));
+        } else {
+            handleSelectedDataChange((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        }
     };
+
+    function stringToDate(dateString) {
+        return parse(dateString, 'dd/MM/yyyy', new Date());
+    }
+
+    const dateOfBirthNew = stringToDate(selectedData.dateOfBirth);
 
     return props.trigger ? (
         <div className={cx('popup')}>
@@ -53,7 +70,9 @@ function EditPopup(props) {
                             name="firstName"
                             placeholder="First name"
                             value={selectedData.firstName}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('firstName', e.target.value)
+                            }
                             required
                         />
                     </div>
@@ -64,19 +83,28 @@ function EditPopup(props) {
                             name="lastName"
                             placeholder="Last name"
                             value={selectedData.lastName}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('lastName', e.target.value)
+                            }
                             required
                         />
                     </div>
                     {/* Date of birth */}
-                    <div>
+                    <div style={{ marginBottom: -10 }}>
                         <label htmlFor="dateOfBirth">Date of birth</label>
-                        <input
-                            name="dateOfBirth"
-                            placeholder="Date of birth"
-                            value={selectedData.dateOfBirth}
-                            onChange={handleChange}
-                            required
+                        <br />
+                        <DatePicker
+                            id="dateOfBirth"
+                            selected={dateOfBirthNew}
+                            onChange={(date) =>
+                                handleChange('dateOfBirth', date)
+                            }
+                            dateFormat="dd/MM/yyyy"
+                            showYearDropdown
+                            scrollableYearDropdown
+                            yearDropdownItemNumber={100}
+                            placeholderText="Select Date of Birth"
+                            className={cx('custom-datepicker')}
                         />
                     </div>
                     {/* CCCD */}
@@ -86,7 +114,9 @@ function EditPopup(props) {
                             name="CCCD"
                             placeholder="CCCD"
                             value={selectedData.CCCD}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('CCCD', e.target.value)
+                            }
                             required
                         />
                     </div>
@@ -97,7 +127,9 @@ function EditPopup(props) {
                             name="phoneNumber"
                             placeholder="Phone number"
                             value={selectedData.phoneNumber}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('phoneNumber', e.target.value)
+                            }
                             required
                         />
                     </div>
@@ -108,17 +140,40 @@ function EditPopup(props) {
                             name="address"
                             placeholder="Address"
                             value={selectedData.address}
-                            onChange={handleChange}
+                            onChange={(e) =>
+                                handleChange('address', e.target.value)
+                            }
                             required
                         />
                     </div>
 
-                    {/* Health condition */}
+                    {/* Health Status */}
                     <div>
-                        <label htmlFor="health">Health condition</label>
-                        <input name="health" placeholder="CCCD" required />
+                        <label htmlFor="healthStatus">Health status</label>
+                        <input
+                            name="healthStatus"
+                            placeholder="Health status"
+                            value={selectedData.healthStatus}
+                            onChange={(e) =>
+                                handleChange('healthStatus', e.target.value)
+                            }
+                            required
+                        />
                     </div>
 
+                    {/* Note */}
+                    <div>
+                        <label htmlFor="note">Note</label>
+                        <input
+                            name="note"
+                            placeholder="Note"
+                            value={selectedData.note}
+                            onChange={(e) =>
+                                handleChange('note', e.target.value)
+                            }
+                            required
+                        />
+                    </div>
                     <button type="submit">Update</button>
                 </form>
             </div>
