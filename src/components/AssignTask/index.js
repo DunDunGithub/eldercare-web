@@ -10,14 +10,20 @@ import LoadingPopup from '../LoadingPopup';
 const cx = classNames.bind(styles);
 
 function Assign() {
-
     const [selectedData, setSelectedData] = useState({});
 
     const [loading, setLoading] = useState(false);
 
+    const [records, setRecords] = useState([]);
+
+    const [filterRecords, setFilterRecords] = useState([]);
+
     const handleEditButton = (row) => {
         setSelectedData(row);
     };
+
+    const [aipName, setAipName] = useState('');
+    const [guardianName, setGuardianName] = useState('');
 
     const column = [
         {
@@ -25,31 +31,55 @@ function Assign() {
             selector: (row) => row.title,
             sortable: true,
         },
-        // {
-        //     name: 'Detail',
-        //     selector: (row) => row.detail,
-        //     // sorttable: true
-        // },
+        {
+            name: 'Detail',
+            selector: (row) => row.detail,
+        },
         {
             name: 'Status',
-            selector: (row) => (row.isDone ? 'Done' : 'Processing'),
-            // sorttable: true
+            selector: (row) => (row.isDone ? 'Done' : 'Not'),
         },
-        // {
-        //     name: 'Start time',
-        //     selector: (row) => row.startTime,
-        // },
-        // {
-        //     name: 'End time',
-        //     selector: (row) => row.endTime,
-        // },
         {
             name: 'Guardian',
-            selector: (row) => row.guardian,
+            selector: (row) => {
+                if (!dataLoaded) {
+                    return 'Loading...';
+                }
+
+                const guardianInfo = guardians.find(
+                    (guardian) => guardian._id === row.guardian,
+                );
+
+                if (guardianInfo) {
+                    setGuardianName(
+                        guardianInfo.firstName + ' ' + guardianInfo.lastName,
+                    );
+                    return guardianInfo.firstName + ' ' + guardianInfo.lastName;
+                } else {
+                    return 'Not Found';
+                }
+            },
         },
         {
             name: 'AIP',
-            selector: (row) => row.aip,
+            selector: (row) => {
+                if (!dataLoaded) {
+                    return 'Loading...';
+                }
+
+                const aipInfo = aips.find((aip) => aip._id === row.aip);
+
+                if (aipInfo) {
+                    setAipName(aipInfo.firstName + ' ' + aipInfo.lastName);
+                    return aipInfo.firstName + ' ' + aipInfo.lastName;
+                } else {
+                    return 'Not Found';
+                }
+            },
+        },
+        {
+            name: 'Note',
+            selector: (row) => row.note,
         },
         {
             name: 'Detail',
@@ -57,7 +87,7 @@ function Assign() {
                 <button
                     onClick={() => {
                         handleEditButton(row);
-                        setpopupDetail(true)
+                        setpopupDetail(true);
                     }}
                     style={{ width: '80px', height: '30px' }}
                 >
@@ -67,32 +97,47 @@ function Assign() {
         },
     ];
 
+    const [dataLoaded, setDataLoaded] = useState(false);
+    const [guardians, setGuardians] = useState([]);
+    const [aips, setAip] = useState([]);
+
     const fetchData = async () => {
-        setLoading(true); // Show loading popup
+        setLoading(true);
         try {
-            const response = await axios.get('https://eldercare.cyclic.cloud/task');
-            setRecords(response.data);
-            setFilterRecords(response.data);
+            const responseTasks = await axios.get(
+                'https://eldercare.cyclic.cloud/task',
+            );
+            setRecords(responseTasks.data);
+            setFilterRecords(responseTasks.data);
+
+            const responseGuardians = await axios.get(
+                'https://eldercare.cyclic.cloud/guardian',
+            );
+            setGuardians(responseGuardians.data);
+
+            const responseAip = await axios.get(
+                'https://eldercare.cyclic.cloud/aip',
+            );
+            setAip(responseAip.data);
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(false); // Hide loading popup regardless of success or failure
+            setLoading(false);
+            setDataLoaded(true); // Set dataLoaded after the state updates
         }
     };
 
     useEffect(() => {
         fetchData();
+        console.log(guardians);
     }, []);
 
-    const [records, setRecords] = useState([]);
-    const [filterRecords, setFilterRecords] = useState([]);
-
-    const handleFilter = (event) => {
-        const newData = filterRecords.filter((row) =>
-            row.name.toLowerCase().includes(event.target.value.toLowerCase()),
-        );
-        setRecords(newData);
-    };
+    // const handleFilter = (event) => {
+    //     const newData = filterRecords.filter((row) =>
+    //         row.name.toLowerCase().includes(event.target.value.toLowerCase()),
+    //     );
+    //     setRecords(newData);
+    // };
 
     const handleAssignTaskAdded = () => {
         fetchData();
@@ -124,10 +169,15 @@ function Assign() {
                     Add more task
                 </button>
             </div>
-            <DataTable columns={column} data={records} pagination></DataTable>
+            {/* {dataLoaded ? (
+                
+            ) : (
+                <p>Loading data...</p>
+            )} */}
+            <DataTable columns={column} data={records} pagination />
 
             {/* Loading Popup */}
-            {loading && <LoadingPopup/>}
+            {loading && <LoadingPopup />}
             {/* Add AIP */}
             <AssignTaskAddPopup
                 trigger={popupAdd}
@@ -140,6 +190,8 @@ function Assign() {
                 trigger={popupDetail}
                 setTrigger={setpopupDetail}
                 selectedData={selectedData}
+                aipName={aipName}
+                guardianName={guardianName}
             ></DetailTask>
         </div>
     );

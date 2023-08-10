@@ -89,6 +89,7 @@ function DataViewGuardian() {
 
     useEffect(() => {
         fetchData();
+        // window.location.reload();
     }, []);
 
     const handlePopupAdd = () => {
