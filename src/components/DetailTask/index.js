@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './DetailTask.module.scss';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { format } from 'date-fns';
 import moment from 'moment';
 
 const cx = classNames.bind(styles);
@@ -46,16 +45,21 @@ function DetailTask(props) {
                             <li>{selectedData.note}</li>
                         </ul>
                     </div>
-                    {/* <img 
-                            className={cx('image')}
-                            src={selectedData.image.link}
-                            ></img>
-                        <div className={cx('address')}>
-                            Address: {selectedData.image.address}
-                        </div>
-                        <div className={cx('address')}>
-                            Time: {selectedData.image.time}
-                        </div> */}
+                    <img
+                        className={cx('image')}
+                        src={selectedData.image.link}
+                        alt="Images"
+                    ></img>
+                    <div className={cx('address')}>
+                        Address: {selectedData.image.address}
+                    </div>
+                    <div className={cx('address')}>
+                        Time:{' '}
+                        {format(
+                            new Date(selectedData.image.time),
+                            'MMMM d yyyy HH:mm',
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

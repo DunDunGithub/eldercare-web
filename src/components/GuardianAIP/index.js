@@ -5,29 +5,30 @@ import DataTable from 'react-data-table-component';
 
 import classNames from 'classnames/bind';
 import styles from './GuardianAIP.module.scss';
-import AddGuardianForm from '../AddGuardianForm';
-import EditGuardianPopup from '../EditGuardianPopup';
 import RemovePopup from '../RemovePopup';
+import GuardianAIPPopup from '../GuardianAIPPopup';
+import LoadingPopup from '../LoadingPopup';
+import EditGuardianAIP from '../EditGuardianAIP';
 
 const cx = classNames.bind(styles);
 
 function GuardianAIP() {
-    const [popupAdd, setpopupAdd] = useState(false);
-
     const [editPopup, seteditPopup] = useState(false);
 
     const [selectedData, setSelectedData] = useState({});
+
+    const [guardians, setGuardians] = useState([]);
+
+    const [loading, setLoading] = useState(false);
 
     const handleEditButton = (row) => {
         setSelectedData(row);
     };
 
     const handleRemoveButton = async (row) => {
-        try { 
+        try {
             if (window.confirm('Are you sure you wish to delete this item?')) {
-                await axios.delete(
-                    `https://eldercare.up.railway.app/guardian/${row._id}`,
-                );
+                await axios.put(`https://eldercare.cyclic.cloud/aip/unassign/${row._id}`);
                 fetchData(); // Refresh the table data after successful deletion
             }
         } catch (error) {
@@ -35,33 +36,28 @@ function GuardianAIP() {
         }
     };
 
+    const handleAIPUpdated = () => {
+        fetchData();
+    };
+
+    const handleSelectedGuardian = (selectedGuardian) => {};
+
     const column = [
         {
-            name: 'First Name',
-            selector: (row) => row.firstName,
+            name: 'AIP',
+            selector: (row) => row.firstName + ' ' + row.lastName,
             sortable: true,
         },
         {
-            name: 'Last Name',
-            selector: (row) => row.lastName,
-            // sorttable: true
-        },
-        {
-            name: 'CCCD',
-            selector: (row) => row.CCCD,
-            // sorttable: true
-        },
-        {
-            name: 'Date of birth',
-            selector: (row) => row.dateOfBirth,
-        },
-        {
-            name: 'Phone number',
-            selector: (row) => row.phoneNumber,
-        },
-        {
-            name: 'Address',
-            selector: (row) => row.address,
+            name: 'Guardian',
+            selector: (row) => {
+                const guardian = guardians.find(
+                    (guardian) => guardian._id === row.guardian,
+                );
+                return guardian
+                    ? guardian.firstName + ' ' + guardian.lastName
+                    : 'No Guardian';
+            },
         },
         {
             name: 'Edit',
@@ -93,29 +89,34 @@ function GuardianAIP() {
     ];
 
     const fetchData = async () => {
-        axios
-            .get('https://eldercare.up.railway.app/guardian')
-            .then((res) => {
-                setRecords(res.data);
-                setFilterRecords(res.data);
-            })
-            .catch((err) => console.log(err));
+        setLoading(true); // Show loading popup
+        try {
+            const response = await axios.get(
+                'https://eldercare.cyclic.cloud/aip',
+            );
+            setRecords(response.data.filter((aip) => aip.guardian));
+            setFilterRecords(response.data.filter((aip) => aip.guardian));
+
+            const responseGuardians = await axios.get(
+                'https://eldercare.cyclic.cloud/guardian',
+            );
+            setGuardians(responseGuardians.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false); // Hide loading popup regardless of success or failure
+        }
     };
 
     useEffect(() => {
         fetchData();
     }, []);
 
+    const [popupAdd, setpopupAdd] = useState(false);
+    // const [removePopup, setremovePopup] = useState(false);
+
     const handlePopupAdd = () => {
         setpopupAdd(false);
-    };
-
-    const handleGuardianAdded = () => {
-        fetchData();
-    };
-
-    const handleGuardianUpdated = () => {
-        fetchData();
     };
 
     const [records, setRecords] = useState([]);
@@ -123,7 +124,9 @@ function GuardianAIP() {
 
     const handleFilter = (event) => {
         const newData = filterRecords.filter((row) =>
-            row.firstName.toLowerCase().includes(event.target.value.toLowerCase()),
+            row.firstName
+                .toLowerCase()
+                .includes(event.target.value.toLowerCase()),
         );
         setRecords(newData);
     };
@@ -144,30 +147,33 @@ function GuardianAIP() {
                     className={cx('btn-add')}
                     onClick={() => setpopupAdd(true)}
                 >
-                    Add Guardian
+                    Assign
                 </button>
             </div>
             <DataTable columns={column} data={records} pagination></DataTable>
 
+            {/* Loading Popup */}
+            {loading && <LoadingPopup />}
+
             {/* Remove */}
             <RemovePopup></RemovePopup>
 
-            {/* Edit */}
-            <EditGuardianPopup
+            <EditGuardianAIP
                 trigger={editPopup}
                 setTrigger={seteditPopup}
                 selectedData={selectedData}
-                onGuardianUpdated={handleGuardianUpdated}
+                onAIPUpdated={handleAIPUpdated}
+                listGuardians={guardians}
                 handleSelectedDataChange={handleEditButton}
-            ></EditGuardianPopup>
+            ></EditGuardianAIP>
 
-            {/* Add AIP */}
-            <AddGuardianForm
+            <GuardianAIPPopup
                 trigger={popupAdd}
-                setTrigger={setpopupAdd}
-                onGuardianAdded={handleGuardianAdded}
-                onAdd={handlePopupAdd}
-            ></AddGuardianForm>
+                setTrigger={handlePopupAdd}
+                onAssigned={handleAIPUpdated}
+                listGuardians={guardians}
+                onGuardianSelected={handleSelectedGuardian}
+            ></GuardianAIPPopup>
         </div>
     );
 }

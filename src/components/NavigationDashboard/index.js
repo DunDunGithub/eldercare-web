@@ -25,18 +25,15 @@ function NavigationDashboard() {
                 </li>
             </ul>
             <ul className={cx('nav-list')}>
-                Report
-                <li className={cx('nav-item')}>
-                    <a href="#!">Example 1</a>
-                </li>
-                <li className={cx('nav-item')}>
-                    <a href="#!">Example 2</a>
-                </li>
-            </ul>
-            <ul className={cx('nav-list')}>
                 Statistical
                 <li className={cx('nav-item')}>
-                    <a href="/dashboard/statistical">Thống kê</a>
+                    <a href="/dashboard/statistical">Guardian</a>
+                </li>
+                <li className={cx('nav-item')}>
+                    <a href="/dashboard/statistical">AIP</a>
+                </li>
+                <li className={cx('nav-item')}>
+                    <a href="/dashboard/statistical">Task</a>
                 </li>
             </ul>
         </div>

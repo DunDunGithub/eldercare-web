@@ -16,7 +16,7 @@ function Assign() {
 
     const [records, setRecords] = useState([]);
 
-    const [filterRecords, setFilterRecords] = useState([]);
+    // const [filterRecords, setFilterRecords] = useState([]);
 
     const handleEditButton = (row) => {
         setSelectedData(row);
@@ -129,15 +129,19 @@ function Assign() {
 
     useEffect(() => {
         fetchData();
-        console.log(guardians);
     }, []);
 
-    // const handleFilter = (event) => {
-    //     const newData = filterRecords.filter((row) =>
-    //         row.name.toLowerCase().includes(event.target.value.toLowerCase()),
-    //     );
-    //     setRecords(newData);
-    // };
+    const [filterRecords, setFilterRecords] = useState([]);
+    const [searchAttribute, setSearchAttribute] = useState('title');
+
+    const handleFilter = (event) => {
+        const newData = filterRecords.filter((row) =>
+            row[searchAttribute]
+                .toLowerCase()
+                .includes(event.target.value.toLowerCase()),
+        );
+        setRecords(newData);
+    };
 
     const handleAssignTaskAdded = () => {
         fetchData();
@@ -157,9 +161,9 @@ function Assign() {
                 <div style={{ margin: '10px' }}>
                     <input
                         type="text"
-                        placeholder="Search..."
+                        placeholder={`Search by ${searchAttribute}...`}
                         style={{ padding: '4px' }}
-                        onChange={() => {}}
+                        onChange={handleFilter}
                     />
                 </div>
                 <button
@@ -184,6 +188,8 @@ function Assign() {
                 setTrigger={setpopupAdd}
                 onAssignTaskAdded={handleAssignTaskAdded}
                 onAdd={handlePopupAdd}
+                aipData={aips}
+                guardianData={guardians}
             ></AssignTaskAddPopup>
 
             <DetailTask

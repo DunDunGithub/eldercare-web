@@ -1,6 +1,5 @@
 import axios from 'axios';
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 
 import classNames from 'classnames/bind';
@@ -11,6 +10,8 @@ import RemovePopup from '../RemovePopup';
 import LoadingPopup from '../LoadingPopup';
 
 const cx = classNames.bind(styles);
+
+const GUARDIAN_API_URL = 'https://eldercare.cyclic.cloud/guardian';
 
 function DataViewGuardian() {
     const [popupAdd, setpopupAdd] = useState(false);
@@ -29,7 +30,7 @@ function DataViewGuardian() {
         try {
             if (window.confirm('Are you sure you wish to delete this item?')) {
                 await axios.delete(
-                    `https://eldercare.cyclic.cloud/guardian/${row._id}`,
+                    GUARDIAN_API_URL + row.id,
                 );
                 fetchData(); // Refresh the table data after successful deletion
             }
@@ -47,12 +48,10 @@ function DataViewGuardian() {
         {
             name: 'Last Name',
             selector: (row) => row.lastName,
-            // sorttable: true
         },
         {
             name: 'CCCD',
             selector: (row) => row.CCCD,
-            // sorttable: true
         },
         {
             name: 'Date of birth',
@@ -69,27 +68,27 @@ function DataViewGuardian() {
         {
             name: 'Level',
             selector: (row) => row.level,
+            sortable: true
         },
     ];
 
     const fetchData = async () => {
-        setLoading(true); // Show loading popup
+        setLoading(true);
         try {
             const response = await axios.get(
-                'https://eldercare.cyclic.cloud/guardian',
+                GUARDIAN_API_URL,
             );
             setRecords(response.data);
             setFilterRecords(response.data);
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(false); // Hide loading popup regardless of success or failure
+            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchData();
-        // window.location.reload();
     }, []);
 
     const handlePopupAdd = () => {

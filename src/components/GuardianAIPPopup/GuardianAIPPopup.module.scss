@@ -14,11 +14,9 @@
 .popup-inner {
     position: relative;
     padding: 32px;
-    width: 100%;
+    width: 800px;
     max-width: 640px;
-    max-height: 800px;
     background-color: #fff;
-    overflow: auto;
 }
 
 .popup-inner .btn-close {
@@ -27,31 +25,20 @@
     right: 16px;
 }
 
-.detail-title {
+.wrap-form {
     display: flex;
+    justify-content: space-around;
 }
 
-.detail-title ul {
-    list-style: none;
+.aip-form {
+    margin-right: 30px;
 }
 
-.ul-1{
-    width: 300px;
+.aip-form select {
+    max-height: 120px; /* Example value, adjust as needed */
+    overflow-y: auto;
 }
 
-.ul-2{
-    width: 800px;
-}
-
-.image {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 400px;
-}
-
-.address{
-    width: 100%;
-    display: flex;
-    justify-content: center;
+.btn-submit {
+    position: relative;
 }

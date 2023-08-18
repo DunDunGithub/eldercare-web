@@ -4,55 +4,171 @@ import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 
 import classNames from 'classnames/bind';
-import styles from './DataViewCalender.module.scss'
+import styles from './DataViewCalender.module.scss';
+import LoadingPopup from '../LoadingPopup';
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+
+import { format } from 'date-fns';
 
 const cx = classNames.bind(styles);
 
 function DataViewCalender() {
+    const [loading, setLoading] = useState(false);
+    const [schedules, setSchedule] = useState(null);
+    const [taks, setTasks] = useState(null);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    const [aips, setAips] = useState(null);
+    const [guardians, setGuardians] = useState(null);
+
     const column = [
         {
-            name: 'Time',
-            selector: (row) => row.id,
+            name: 'Task',
+            selector: (row) => row.title,
             sortable: true,
         },
         {
-            name: 'Address',
-            selector: (row) => row.name,
-            // sorttable: true
+            name: 'Guardian',
+            selector: (row) => {
+                if (!dataLoaded) {
+                    return 'Loading...';
+                }
+
+                const guardianInfo = guardians.find(
+                    (guardian) => guardian._id === row.guardian,
+                );
+
+                if (guardianInfo) {
+                    return guardianInfo.firstName + ' ' + guardianInfo.lastName;
+                } else {
+                    return 'Not Found';
+                }
+            },
         },
         {
             name: 'AIP',
-            selector: (row) => row.email,
-            // sorttable: true
+            selector: (row) => {
+                if (!dataLoaded) {
+                    return 'Loading...';
+                }
+
+                const aipInfo = aips.find((aip) => aip._id === row.aip);
+
+                if (aipInfo) {
+                    return aipInfo.firstName + ' ' + aipInfo.lastName;
+                } else {
+                    return 'Not Found';
+                }
+            },
         },
         {
-            name: 'Job description',
-            selector: (row) => row.address.city,
+            name: 'Start',
+            selector: (row) => {
+                if (!dataLoaded) {
+                    return 'Loading...';
+                }
+
+                const scheduleInfo = schedules.find(
+                    (schedule) => schedule._id === row.schedule,
+                );
+
+                if (scheduleInfo) {
+                    return format(
+                        new Date(scheduleInfo.startTime),
+                        'MMMM d yyyy HH:mm',
+                    );
+                } else {
+                    return 'Not Found';
+                }
+            },
         },
         {
-            name: 'Pictures prove',
-            selector: (row) => row.phonenumber,
+            name: 'End',
+            selector: (row) => {
+                if (!dataLoaded) {
+                    return 'Loading...';
+                }
+
+                const scheduleInfo = schedules.find(
+                    (schedule) => schedule._id === row.schedule,
+                );
+
+                if (scheduleInfo) {
+                    return format(
+                        new Date(scheduleInfo.endTime),
+                        'MMMM d yyyy HH:mm',
+                    );
+                } else {
+                    return 'Not Found';
+                }
+            },
         },
         {
-            name: 'Rate',
-            selector: (row) => row.phonenumber,
+            name: 'Deadline',
+            selector: (row) =>
+                format(new Date(row.deadline), 'MMMM d yyyy HH:mm'),
         },
         {
-            name: 'Change',
-        }
+            name: 'Status',
+            selector: (row) =>
+                row.isDone ? (
+                    <div>
+                        <FaCheckCircle color="green" /> Done
+                    </div>
+                ) : (
+                    <div>
+                        <FaTimesCircle color="red" /> Not
+                    </div>
+                ),
+        },
+        {
+            name: 'Cycle',
+            selector: (row) =>
+                row.isCycle ? (
+                    <div>
+                        <FaCheckCircle color="green" /> Yes
+                    </div>
+                ) : (
+                    <div>
+                        <FaTimesCircle color="red" /> No
+                    </div>
+                ),
+        },
     ];
 
+    const fetchData = async () => {
+        setLoading(true); // Show loading popup
+        try {
+            const responseSchedule = await axios.get(
+                'https://eldercare.cyclic.cloud/schedule',
+            );
+            setSchedule(responseSchedule.data);
+
+            const responseTask = await axios.get(
+                'https://eldercare.cyclic.cloud/task',
+            );
+            setTasks(responseTask.data);
+            setRecords(responseTask.data);
+            setFilterRecords(responseTask.data);
+
+            const responseAip = await axios.get(
+                'https://eldercare.cyclic.cloud/aip',
+            );
+            setAips(responseAip.data);
+
+            const responseGuardian = await axios.get(
+                'https://eldercare.cyclic.cloud/guardian',
+            );
+            setGuardians(responseGuardian.data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+            setDataLoaded(true);
+        }
+    };
+
     useEffect(() => {
-        const fetData = async () => {
-            axios
-                .get('https://jsonplaceholder.typicode.com/users')
-                .then((res) => {
-                    setRecords(res.data)
-                    setFilterRecords(res.data)
-                })
-                .catch((err) => console.log(err));
-        };
-        fetData();
+        fetchData();
     }, []);
 
     const [records, setRecords] = useState([]);
@@ -67,24 +183,10 @@ function DataViewCalender() {
 
     return (
         <div className={cx('data-view')}>
-            <h2>Dữ liệu tổng quát Calender</h2>
-            <div className={cx('header-data-view')}>
-                <div style={{ margin: '10px' }}>
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        style={{ padding: '4px' }}
-                        onChange={() => {}}
-                    />
-                </div>
-                <button
-                    className={cx('btn-add')}
-                    onClick={() => {}}
-                >
-                    ADD Task
-                </button>
-            </div>
+            <h2>Dữ liệu tổng quát công việc</h2>
+            <div className={cx('header-data-view')}></div>
             <DataTable columns={column} data={records} pagination></DataTable>
+            {loading && <LoadingPopup />}
         </div>
     );
 }
