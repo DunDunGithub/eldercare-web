@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { parse, format } from 'date-fns';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
 
@@ -23,7 +24,7 @@ function AddAIPForm(props) {
         e.preventDefault();
 
         axios
-            .post('https://eldercare.cyclic.cloud/aip', aipData)
+            .post(apiUrls.aip, aipData)
             .then((res) => {
                 // Call the callback function to trigger table update in DataViewAIP
                 props.onAIPAdded();

@@ -8,10 +8,9 @@ import AddGuardianForm from '../AddGuardianForm';
 import EditGuardianPopup from '../EditGuardianPopup';
 import RemovePopup from '../RemovePopup';
 import LoadingPopup from '../LoadingPopup';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
-
-const GUARDIAN_API_URL = 'https://eldercare.cyclic.cloud/guardian';
 
 function DataViewGuardian() {
     const [popupAdd, setpopupAdd] = useState(false);
@@ -30,7 +29,7 @@ function DataViewGuardian() {
         try {
             if (window.confirm('Are you sure you wish to delete this item?')) {
                 await axios.delete(
-                    GUARDIAN_API_URL + row.id,
+                    apiUrls.guardian + row.id,
                 );
                 fetchData(); // Refresh the table data after successful deletion
             }
@@ -76,7 +75,7 @@ function DataViewGuardian() {
         setLoading(true);
         try {
             const response = await axios.get(
-                GUARDIAN_API_URL,
+                apiUrls.guardian,
             );
             setRecords(response.data);
             setFilterRecords(response.data);

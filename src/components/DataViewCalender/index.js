@@ -7,6 +7,7 @@ import classNames from 'classnames/bind';
 import styles from './DataViewCalender.module.scss';
 import LoadingPopup from '../LoadingPopup';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import apiUrls from '~/apiUrls';
 
 import { format } from 'date-fns';
 
@@ -139,24 +140,24 @@ function DataViewCalender() {
         setLoading(true); // Show loading popup
         try {
             const responseSchedule = await axios.get(
-                'https://eldercare.cyclic.cloud/schedule',
+                apiUrls.schedule
             );
-            setSchedule(responseSchedule.data);
+            setSchedule(responseSchedule.data);;
 
             const responseTask = await axios.get(
-                'https://eldercare.cyclic.cloud/task',
+                apiUrls.task,
             );
             setTasks(responseTask.data);
             setRecords(responseTask.data);
             setFilterRecords(responseTask.data);
 
             const responseAip = await axios.get(
-                'https://eldercare.cyclic.cloud/aip',
+                apiUrls.aip
             );
             setAips(responseAip.data);
 
             const responseGuardian = await axios.get(
-                'https://eldercare.cyclic.cloud/guardian',
+                apiUrls.guardian,
             );
             setGuardians(responseGuardian.data);
         } catch (error) {

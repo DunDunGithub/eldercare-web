@@ -9,6 +9,7 @@ import RemovePopup from '../RemovePopup';
 import GuardianAIPPopup from '../GuardianAIPPopup';
 import LoadingPopup from '../LoadingPopup';
 import EditGuardianAIP from '../EditGuardianAIP';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
 
@@ -28,7 +29,7 @@ function GuardianAIP() {
     const handleRemoveButton = async (row) => {
         try {
             if (window.confirm('Are you sure you wish to delete this item?')) {
-                await axios.put(`https://eldercare.cyclic.cloud/aip/unassign/${row._id}`);
+                await axios.put(`${apiUrls.aip}/unassign/${row._id}`);
                 fetchData(); // Refresh the table data after successful deletion
             }
         } catch (error) {
@@ -92,13 +93,13 @@ function GuardianAIP() {
         setLoading(true); // Show loading popup
         try {
             const response = await axios.get(
-                'https://eldercare.cyclic.cloud/aip',
+                apiUrls.aip,
             );
             setRecords(response.data.filter((aip) => aip.guardian));
             setFilterRecords(response.data.filter((aip) => aip.guardian));
 
             const responseGuardians = await axios.get(
-                'https://eldercare.cyclic.cloud/guardian',
+                apiUrls.guardian,
             );
             setGuardians(responseGuardians.data);
         } catch (error) {

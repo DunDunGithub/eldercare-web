@@ -7,6 +7,7 @@ import LoadingPopup from '../LoadingPopup';
 import TimeRangePicker from '../TimeRangePicker';
 
 import { format } from 'date-fns';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
 
@@ -37,7 +38,7 @@ function AssignTaskAddPopup(props) {
         setLoading(true); // Show loading popup
         try {
             const response = await axios.get(
-                'https://eldercare.cyclic.cloud/schedule',
+                apiUrls.schedule,
             );
             setSchedule(response.data);
         } catch (error) {
@@ -68,7 +69,7 @@ function AssignTaskAddPopup(props) {
         console.log(taskData);
 
         axios
-            .post('https://eldercare.cyclic.cloud/task', taskData)
+            .post(apiUrls.task, taskData)
             .then((res) => {
                 // Call the callback function to trigger table update in DataViewAIP
                 props.onAssignTaskAdded();

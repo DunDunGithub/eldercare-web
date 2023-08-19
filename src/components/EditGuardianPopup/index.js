@@ -3,6 +3,7 @@ import styles from './EditGuardianPopup.module.scss';
 import DatePicker from 'react-datepicker';
 import axios from 'axios';
 import { parse, format } from 'date-fns';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +17,7 @@ function EditGuardianPopup(props) {
 
         try {
             const response = await axios.put(
-                `https://eldercare.cyclic.cloud/guardian/${selectedData._id}`,
+                `${apiUrls.guardian}/${selectedData._id}`,
                 selectedData,
             );
             console.log(response.data); // Handle the response from the API

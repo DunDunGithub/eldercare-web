@@ -9,6 +9,7 @@ import AddAIPForm from '../AddAIPForm';
 import RemovePopup from '../RemovePopup';
 import EditPopup from '../EditAIPPopup';
 import LoadingPopup from '../LoadingPopup';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
 
@@ -25,7 +26,7 @@ function DataViewAIP() {
         try {
             if (window.confirm('Are you sure you wish to delete this item?')) {
                 await axios.delete(
-                    `https://eldercare.up.railway.app/aip/${row._id}`,
+                    `${apiUrls.aip}/${row._id}`,
                 );
                 fetchData(); // Refresh the table data after successful deletion
             }
@@ -102,7 +103,7 @@ function DataViewAIP() {
     const fetchData = async () => {
         setLoading(true); // Show loading popup
         try {
-            const response = await axios.get('https://eldercare.cyclic.cloud/aip');
+            const response = await axios.get(apiUrls.aip);
             setRecords(response.data);
             setFilterRecords(response.data);
         } catch (error) {

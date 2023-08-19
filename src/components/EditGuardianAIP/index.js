@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { useEffect, useState } from 'react';
 import { set } from 'date-fns';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
 
@@ -38,7 +39,7 @@ function EditGuardianAIP(props) {
             };
 
             const response = await axios.put(
-                `https://eldercare.cyclic.cloud/aip/assign/${selectedData._id}`,
+                `${apiUrls.aip}/assign/${selectedData._id}`,
                 requestBody,
             );
             props.onAIPUpdated();

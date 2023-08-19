@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './GuardianAIPPopup.module.scss';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
 
@@ -37,7 +38,7 @@ function GuardianAIPPopup(props) {
         setLoading(true); // Show loading popup
         try {
             const response = await axios.get(
-                'https://eldercare.cyclic.cloud/aip',
+                apiUrls.aip,
             );
             setAips(response.data.filter((aip) => !aip.guardian));
 
@@ -69,7 +70,7 @@ function GuardianAIPPopup(props) {
                 console.log("Guardian: ", selectedGuardian._id);
 
                 const response = await axios.put(
-                    `https://eldercare.cyclic.cloud/aip/assign/${selectedAIP._id}`,
+                    `${apiUrls.aip}/assign/${selectedAIP._id}`,
                     requestBody,
                 );
 

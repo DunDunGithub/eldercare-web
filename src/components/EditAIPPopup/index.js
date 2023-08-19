@@ -3,6 +3,7 @@ import styles from './EditAIPPopup.module.scss';
 import DatePicker from 'react-datepicker';
 import axios from 'axios';
 import { parse, format } from 'date-fns';
+import apiUrls from '~/apiUrls';
 
  
 const cx = classNames.bind(styles);
@@ -15,7 +16,7 @@ function EditPopup(props) {
         e.preventDefault();
         try {
             const response = await axios.put(
-                `https://eldercare.cyclic.cloud/aip/${selectedData._id}`,
+                `${apiUrls.aip}/${selectedData._id}`,
                 selectedData,
             );
             console.log(response.data); // Handle the response from the API

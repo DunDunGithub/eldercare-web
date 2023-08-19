@@ -6,6 +6,7 @@ import DataTable from 'react-data-table-component';
 import AssignTaskAddPopup from '../AssignTaskAddPopup';
 import DetailTask from '../DetailTask';
 import LoadingPopup from '../LoadingPopup';
+import apiUrls from '~/apiUrls';
 
 const cx = classNames.bind(styles);
 
@@ -15,8 +16,6 @@ function Assign() {
     const [loading, setLoading] = useState(false);
 
     const [records, setRecords] = useState([]);
-
-    // const [filterRecords, setFilterRecords] = useState([]);
 
     const handleEditButton = (row) => {
         setSelectedData(row);
@@ -105,18 +104,18 @@ function Assign() {
         setLoading(true);
         try {
             const responseTasks = await axios.get(
-                'https://eldercare.cyclic.cloud/task',
+                apiUrls.task,
             );
             setRecords(responseTasks.data);
             setFilterRecords(responseTasks.data);
 
             const responseGuardians = await axios.get(
-                'https://eldercare.cyclic.cloud/guardian',
+                apiUrls.guardian,
             );
             setGuardians(responseGuardians.data);
 
             const responseAip = await axios.get(
-                'https://eldercare.cyclic.cloud/aip',
+                apiUrls.aip,
             );
             setAip(responseAip.data);
         } catch (error) {
